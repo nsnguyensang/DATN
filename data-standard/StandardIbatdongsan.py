@@ -107,9 +107,9 @@ class StandardCommon:
                 date = date.group(0)
             else:
                 if "Hôm nay" in item:
-                    date = "21/06/2022"
+                    date = "04/06/2023"
                 if "Hôm qua" in item:
-                    date = "20/06/2022"
+                    date = "04/06/2023"
             ls.append(date)
         self.data[fieldDate] = ls
 

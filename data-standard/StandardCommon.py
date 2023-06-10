@@ -173,28 +173,3 @@ class StandardCommon:
                     item = value
                 ls.append(item)
             self.data[field] = ls
-
-class StandardBatdongsan123(StandardCommon):
-    def __init__(self, data):
-        self.data = data
-
-    def addField(self, fields, values):
-        N = len(self.data)
-        for field, value in zip(fields, values):
-            ls = []
-            for i in range(N):
-                ls.append(value)
-            self.data[field] = ls
-
-PATH_BDS123 = "../data-raw/data_batdongsan123.csv"
-batdongsan123 = pd.read_csv(PATH_BDS123, encoding = 'utf-8')
-
-bds123 = StandardBatdongsan123(batdongsan123)
-bds123.sliceAddress("address")
-bds123.standardDate("date")
-bds123.standardPrice("price", "acreage")
-bds123.addField(["type", "floor", "terrace", "parking", "kitchen", "juridical"], ["Cần bán căn hộ chung cư", "1 t","không", "có", "có","Sổ hồng/ Sổ đỏ" ])
-bds123.strip(["title"])
-bds123.processValueNull(["direction", "province", "street", "ward", "district", "price", "bedroom", "bathroom" ], ["None", "None", "None", "None", "None", "0", "0 pn", "0 wc"])
-bds123.dropDuplicate(["province", "ward", "street", "district", "acreage", "price", "bedroom", "project", "bathroom"])
-bds123.data.to_csv("batdongsan123", encoding = 'utf-8')
