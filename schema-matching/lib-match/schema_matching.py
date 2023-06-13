@@ -23,9 +23,9 @@ class SchemaMatching:
         self.min_thres = min_thres
 
     def get_train_data(self):
-        PATH_BAT_DONG_SAN_SO = "/content/drive/MyDrive/20212/class/tich-hop-du-lieu/bai-tap-lon/real-estate-integration/prj-exam/data-standard/batdongsan123.csv"
-        batdongsanso = pd.read_csv(PATH_BAT_DONG_SAN_SO, encoding = 'utf-8')
-        return batdongsanso
+        PATH_BAT_DONG_SAN_123 = "C:/Workspace/DATN/data-standard/batdongsan123.csv"
+        batdongsan123 = pd.read_csv(PATH_BAT_DONG_SAN_123, encoding = 'utf-8')
+        return batdongsan123
 
     def preprocess(self, text):
         text = re.sub("\d+[\.-]\d+[\.-]\d+", " dien_thoai ", text)
