@@ -17,7 +17,7 @@ class remove_duplicate:
         self.feature_extractor: TfidfVectorizer = None
 
     def get_data_to_train(self):
-        path_data = '/home/darkknight/real-estate-integration/prj-exam/schema-matching/output/final.csv'
+        path_data = 'C:/Workspace/DATN/schema-matching/output/final.csv'
         df = pd.read_csv(path_data, encoding='utf-8', low_memory=False)
         df = df.drop(["Unnamed: 0"], axis=1)
         df = df.fillna('None')
@@ -76,7 +76,7 @@ class remove_duplicate:
 
     # def get_old_data(self, ward, district, province, type, min_time, max_time):
     def get_old_data(self, ward, district, province, type, min_time, max_time):
-        path_data = '/home/darkknight/real-estate-integration/prj-exam/schema-matching/output/final.csv'
+        path_data = 'C:/Workspace/DATN/schema-matching/output/final.csv'
         df = pd.read_csv(path_data, encoding='utf-8', low_memory=False)
         df = df.drop(["Unnamed: 0"], axis=1)
         df["date_second"] = df["date"].map(lambda x: (datetime.strptime(
