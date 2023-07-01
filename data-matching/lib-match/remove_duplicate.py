@@ -49,14 +49,14 @@ class remove_duplicate:
         return True
 
     def remove_inside(self, df):
-        # df.fillna('None', inplace=True)
+        df.fillna('None', inplace=True)
         try:
             X_vectors = self.feature_extractor.transform(df["description"])
             similarity_scores = cosine_similarity(X_vectors)
             size = len(df)
             drop_set = set()
             for i in range(size):
-                for j in range(i+1, size):
+                for j in range(i + 1, size):
                     if similarity_scores[i, j] >= self.min_thres:
                         item1 = df.iloc[i]
                         item2 = df.iloc[j]
@@ -67,6 +67,7 @@ class remove_duplicate:
                                 drop_set.add(i)
                             elif j not in drop_set:
                                 drop_set.add(j)
+
             all = set(range(size))
             keep = all.difference(drop_set)
             keep = list(keep)
