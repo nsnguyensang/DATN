@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 import urllib.parse
 import sys
+import json
 
 app = Flask(__name__)
 
@@ -38,30 +39,43 @@ def get_data():
 # API filter search
 @app.route('/api/search', methods=['POST'])
 def search_data():
-    if request.is_json:
-        # Lấy dữ liệu từ yêu cầu POST
-        data = request.get_json()
+    # Lấy dữ liệu từ yêu cầu POST
+    data = request.get_json()
 
-        # Lấy từ khóa tìm kiếm từ dữ liệu
-        encoded_title = data.get('title', '')
-        
-        # Giải mã từ khóa
-        title = urllib.parse.unquote(encoded_title)
+    # Lấy từ khóa tìm kiếm từ dữ liệu
+    encoded_title = data.get('title', '')
+    
+    # Giải mã từ khóa
+    title = urllib.parse.unquote(encoded_title)
 
-        # Lấy giá trị tối thiểu và tối đa từ dữ liệu
-        min_price = float(data.get('min_price', 0))
-        max_price = float(data.get('max_price', float('inf')))
+    # Lấy giá trị tối thiểu và tối đa từ dữ liệu
+    min_price = float(data.get('min_price', 0))
+    max_price = float(data.get('max_price', float('inf')))
 
-        # Tạo query để tìm kiếm trong trường "title" và lọc theo giá
-        query = {'title': {'$regex': title, '$options': 'i'}, 'giá': {'$gte': min_price, '$lte': max_price}}
+    # Lấy giá trị tỉnh/thành phố từ dữ liệu
+    province = data.get('province', '')
 
-        # Truy vấn dữ liệu từ collection với query tìm kiếm
-        result = list(collection.find(query, {'_id': 0}))
+    # Lấy giá trị quận/huyện từ dữ liệu
+    district = data.get('district', '')
+    project = data.get('project', '')
+    bedroom = data.get('bedroom', '')
 
-        # Trả về kết quả tìm kiếm dưới dạng JSON
-        return jsonify(result)
+    # Tạo query để tìm kiếm trong trường "title", lọc theo giá, và tìm theo tỉnh/thành phố và quận/huyện
+    query = {
+        'title': {'$regex': title, '$options': 'i'},
+        'price': {'$gte': min_price, '$lte': max_price},
+        'province': {'$regex': province, '$options': 'i'},
+        'district': {'$regex': district, '$options': 'i'},
+        'project' : {'$regex': project, '$options': 'i'},
+        'bedroom' : {'$regex': bedroom, '$options': 'i'},
+    }
 
-    return jsonify({'error': 'Invalid request'})
+    # Truy vấn dữ liệu từ collection với query tìm kiếm
+    result = list(collection.find(query, {'_id': 0}))
+
+    # Trả về kết quả tìm kiếm dưới dạng JSON
+    return jsonify(result)
+
 
 @app.route('/api/filter', methods=['GET'])
 def filter_data():
@@ -70,7 +84,9 @@ def filter_data():
     max_price = float(request.args.get('max_price', float('inf')))
 
     # Tạo query để lọc dữ liệu theo giá
-    query = {'price': {'$gte': min_price, '$lte': max_price}}
+    query = {
+        'price': {'$gte': min_price, '$lte': max_price}
+    }
 
     # Truy vấn dữ liệu từ collection với query lọc
     data = list(collection.find(query, {'_id': 0}))
