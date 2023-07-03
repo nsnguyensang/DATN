@@ -2,31 +2,38 @@ import {
   ContainerOutlined,
   DesktopOutlined,
   PieChartOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import RealIcon from "../../assets/image/real-estate.png";
-import { Button, Layout, Menu, theme } from "antd";
+import Home from "../Home";
+import { Layout, Menu, theme } from "antd";
 import { useState } from "react";
-const { Header, Sider, Content } = Layout;
+const { Header, Content, Footer } = Layout;
 const LayoutGlobal = () => {
   const [collapsed, setCollapsed] = useState(true);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   return (
-    <Layout
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
+    <Layout className="layout">
+      <Header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          background: "white",
+        }}
       >
+        <div
+          style={{
+            marginTop: "25px",
+            marginRight: "20px",
+            marginLeft: "-22px",
+          }}
+        >
+          <img src={RealIcon} style={{ width: "45px" }} />
+        </div>
         <Menu
-          theme="dark"
-          mode="inline"
+          theme="light"
+          mode="horizontal"
           defaultSelectedKeys={["1"]}
           items={[
             {
@@ -46,32 +53,32 @@ const LayoutGlobal = () => {
             },
           ]}
         />
-      </Sider>
-      <Layout>
-        <Header
+        <span
           style={{
-            padding: 0,
-            background: colorBgContainer,
-            height: "50px",
+            position: "absolute",
+            marginLeft: "89%",
           }}
         >
-          <img src={RealIcon} style={{ width: "51px" }} />
-
-          <span style={{ position: "absolute", marginLeft: `${collapsed ? "81%":"72%"}`, marginTop: "-8px" }}>
-            Đăng nhập | Đăng kí
-          </span>
-        </Header>
-        <Content
-          style={{
-            margin: "16px 16px",
-            padding: 24,
-            minHeight: 280,
-            background: colorBgContainer,
-          }}
-        >
-          Content
-        </Content>
-      </Layout>
+          Đăng nhập | Đăng kí
+        </span>
+      </Header>
+      <Content
+        style={{
+          margin: "16px 16px",
+          padding: 24,
+          minHeight: 900,
+          background: colorBgContainer,
+        }}
+      >
+       <Home/>
+      </Content>
+      <Footer
+        style={{
+          textAlign: "center",
+        }}
+      >
+        Ant Design ©2023 Created by Ant UED
+      </Footer>
     </Layout>
   );
 };

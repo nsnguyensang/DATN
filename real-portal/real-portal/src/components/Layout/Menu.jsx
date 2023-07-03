@@ -1,55 +1,62 @@
-import {
-    ContainerOutlined,
-    MenuFoldOutlined,
-    PieChartOutlined,
-    DesktopOutlined,
-    MenuUnfoldOutlined,
-  } from "@ant-design/icons";
-  import { Button, Menu } from "antd";
-  import { useState } from "react";
-  function getItem(label, key, icon, children, type) {
-    return {
-      key,
-      icon,
-      children,
-      label,
-      type,
-    };
-  }
-  const items = [
-    getItem("Trang chủ", "1", <DesktopOutlined />),
-    getItem("Phân tích thống kê", "2", <PieChartOutlined />),
-    getItem("Dự đoán giá", "3", <ContainerOutlined />),
-  ];
-  const MenuGlobal = () => {
-    const [collapsed, setCollapsed] = useState(true);
-    const toggleCollapsed = () => {
-      setCollapsed(!collapsed);
-    };
-    return (
-      <div
+import { Breadcrumb, Layout, Menu, theme } from 'antd';
+const { Header, Content, Footer } = Layout;
+const App = () => {
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  return (
+    <Layout className="layout">
+      <Header
         style={{
-          width: 256,
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
-        <Button
-          type="primary"
-          onClick={toggleCollapsed}
+        <div className="demo-logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['1']}
+          items={new Array(15).fill(null).map((_, index) => {
+            const key = index + 1;
+            return {
+              key,
+              label: `nav ${key}`,
+            };
+          })}
+        />
+      </Header>
+      <Content
+        style={{
+          padding: '0 50px',
+        }}
+      >
+        <Breadcrumb
           style={{
-            marginLeft: "14px",
+            margin: '16px 0',
           }}
         >
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </Button>
-        <Menu
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          theme="light"
-          inlineCollapsed={collapsed}
-          items={items}
-        />
-      </div>
-    );
-  };
-  export default MenuGlobal;
-  
+          <Breadcrumb.Item>Home</Breadcrumb.Item>
+          <Breadcrumb.Item>List</Breadcrumb.Item>
+          <Breadcrumb.Item>App</Breadcrumb.Item>
+        </Breadcrumb>
+        <div
+          className="site-layout-content"
+          style={{
+            background: colorBgContainer,
+          }}
+        >
+          Content
+        </div>
+      </Content>
+      <Footer
+        style={{
+          textAlign: 'center',
+        }}
+      >
+        Ant Design ©2023 Created by Ant UED
+      </Footer>
+    </Layout>
+  );
+};
+export default App;
