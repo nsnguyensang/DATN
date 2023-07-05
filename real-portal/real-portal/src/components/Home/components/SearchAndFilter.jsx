@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { SearchOutlined } from '@ant-design/icons';
-import { Input, Select, Space } from "antd";
-import { SearchBox, HomeFilter } from "./style";
+import { SearchOutlined, ReloadOutlined, HomeOutlined } from "@ant-design/icons";
+import { Input, Select, Space, Button } from "antd";
+import { SearchBox, HomeFilter, ButtomRefresh, TitleBottom } from "./style";
 
 const SearchAndFilter = () => {
   const handleChange = (value) => {
@@ -10,13 +10,18 @@ const SearchAndFilter = () => {
   return (
     <Fragment>
       <SearchBox>
-        <Input addonBefore={<SearchOutlined />}/>
+        <Space wrap>
+          <Input style={{ width: "1046px" }} addonBefore={<HomeOutlined />} placeholder="Tìm nhanh. VD: Vinhomes OceanPark" />
+          <Button type="primary" icon={<SearchOutlined />}>
+            Tìm kiếm
+          </Button>
+        </Space>
         <HomeFilter>
           <Space wrap>
             <Select
               placeholder="Địa điểm"
               style={{
-                width: 200,
+                width: 220,
               }}
               allowClear
               options={[
@@ -29,7 +34,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Mức giá"
               style={{
-                width: 200,
+                width: 220,
               }}
               allowClear
               options={[
@@ -42,7 +47,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Diện tích"
               style={{
-                width: 200,
+                width: 220,
               }}
               allowClear
               options={[
@@ -55,7 +60,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Phòng ngủ"
               style={{
-                width: 200,
+                width: 220,
               }}
               allowClear
               options={[
@@ -68,7 +73,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Hướng nhà"
               style={{
-                width: 200,
+                width: 220,
               }}
               allowClear
               options={[
@@ -78,6 +83,7 @@ const SearchAndFilter = () => {
                 },
               ]}
             />
+            <Button type="primary" icon={<ReloadOutlined />} size="small" />
           </Space>
         </HomeFilter>
       </SearchBox>

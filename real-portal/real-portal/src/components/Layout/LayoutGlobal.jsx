@@ -53,14 +53,14 @@ const LayoutGlobal = () => {
             },
           ]}
         />
-        <span
+        {/* <span
           style={{
             position: "absolute",
             marginLeft: "89%",
           }}
         >
           Đăng nhập | Đăng kí
-        </span>
+        </span> */}
       </Header>
       <Content
         style={{
