@@ -3,18 +3,15 @@ import {
   DesktopOutlined,
   PieChartOutlined,
 } from "@ant-design/icons";
+import { Link, useLocation } from "react-router-dom";
 import RealIcon from "../../assets/image/real-estate.png";
-import Home from "../Home";
-import Predict from "../Predict";
-import { Layout, Menu, theme } from "antd";
-import { useState } from "react";
-import VisualData from "../VisualData";
-const { Header, Content, Footer } = Layout;
+
+import { Layout, Menu } from "antd";
+
+const { Header } = Layout;
 const LayoutGlobal = () => {
-  const [collapsed, setCollapsed] = useState(true);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  const location = useLocation();
+
   return (
     <Layout className="layout">
       <Header
@@ -29,60 +26,29 @@ const LayoutGlobal = () => {
             marginTop: "25px",
             marginRight: "20px",
             marginLeft: "-22px",
+            cursor: "pointer",
           }}
         >
-          <img src={RealIcon} style={{ width: "45px" }} />
+          <Link to="/">
+            <img src={RealIcon} style={{ width: "45px" }} />
+          </Link>
         </div>
         <Menu
           theme="light"
           mode="horizontal"
-          defaultSelectedKeys={["1"]}
-          items={[
-            {
-              key: "1",
-              icon: <DesktopOutlined />,
-              label: "Trang chủ",
-            },
-            {
-              key: "2",
-              icon: <PieChartOutlined />,
-              label: "Phân tích thống kê",
-            },
-            {
-              key: "3",
-              icon: <ContainerOutlined />,
-              label: "Dự đoán giá",
-            },
-          ]}
-        />
-        {/* <span
-          style={{
-            position: "absolute",
-            marginLeft: "89%",
-          }}
+          selectedKeys={[location.pathname]}
         >
-          Đăng nhập | Đăng kí
-        </span> */}
+          <Menu.Item key="/" icon={<DesktopOutlined />}>
+            <Link to="/">Trang chủ</Link>
+          </Menu.Item>
+          <Menu.Item key="/visual" icon={<PieChartOutlined />}>
+            <Link to="/visual">Phân tích thống kê</Link>
+          </Menu.Item>
+          <Menu.Item key="/predict" icon={<ContainerOutlined />}>
+            <Link to="/predict">Dự đoán giá</Link>
+          </Menu.Item>
+        </Menu>
       </Header>
-      <Content
-        style={{
-          margin: "16px 16px",
-          padding: 24,
-          minHeight: 1000,
-          background: colorBgContainer,
-        }}
-      >
-        {/* <Home/> */}
-        <VisualData />
-        {/* <Predict/> */}
-      </Content>
-      <Footer
-        style={{
-          textAlign: "center",
-        }}
-      >
-        Thông tin chung cư toàn quốc © 2023 SangNV
-      </Footer>
     </Layout>
   );
 };

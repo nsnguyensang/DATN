@@ -34,7 +34,15 @@ const VisualData = () => {
     },
   };
 
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  const labels = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+  ];
   const data = {
     labels: labels,
     datasets: [
@@ -51,7 +59,9 @@ const VisualData = () => {
   return (
     <Fragment>
       <div>Biểu diễn dữ liệu</div>
-      <Line options={options} data={data} />
+      <div style={{width: "500px"}}>
+        <Line options={options} data={data} />
+      </div>
     </Fragment>
   );
 };
