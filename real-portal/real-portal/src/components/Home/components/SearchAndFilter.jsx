@@ -11,7 +11,7 @@ const SearchAndFilter = () => {
     <Fragment>
       <SearchBox>
         <Space wrap>
-          <Input style={{ width: "1046px" }} addonBefore={<HomeOutlined />} placeholder="Tìm nhanh. VD: Vinhomes OceanPark" />
+          <Input style={{ width: "800px" }} addonBefore={<HomeOutlined />} placeholder="Tìm nhanh. VD: Vinhomes Ocean Park" />
           <Button type="primary" icon={<SearchOutlined />}>
             Tìm kiếm
           </Button>
@@ -21,7 +21,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Địa điểm"
               style={{
-                width: 220,
+                width: 170,
               }}
               allowClear
               options={[
@@ -34,7 +34,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Mức giá"
               style={{
-                width: 220,
+                width: 170,
               }}
               allowClear
               options={[
@@ -47,7 +47,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Diện tích"
               style={{
-                width: 220,
+                width: 170,
               }}
               allowClear
               options={[
@@ -60,7 +60,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Phòng ngủ"
               style={{
-                width: 220,
+                width: 170,
               }}
               allowClear
               options={[
@@ -73,7 +73,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Hướng nhà"
               style={{
-                width: 220,
+                width: 170,
               }}
               allowClear
               options={[

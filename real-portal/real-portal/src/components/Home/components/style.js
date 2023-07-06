@@ -6,7 +6,7 @@ export const SearchBox = styled.div`
   border-radius: 0 4px 4px 4px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   margin: 0 auto;
-  max-width: 1200px;
+  max-width: 954px;
   padding: 16px;
   position: relative;
 `;
@@ -36,10 +36,14 @@ export const CardFull = styled.div`
 export const CardImage = styled.div`
   width: calc(100% + 1px);
   height: 233px;
+  background: #0000004d;
   margin-left: -0.5px;
   margin-right: -0.5px;
   float: none;
   border-radius: 4px 4px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const CardInfo = styled.div`

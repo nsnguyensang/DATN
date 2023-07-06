@@ -27,71 +27,113 @@ import {
   ButtonGroup,
   ButtomView,
 } from "./style";
-const CardRealEaste = () => {
+const CardRealEaste = ({ data }) => {
+  const pricePerProcess = (idx) => {
+    let pricePer = (idx?.price / (parseInt(idx?.square) * 1000000)).toFixed(2);
+    if (pricePer > 1000000) {
+      pricePer = (pricePer / 1000000).toFixed(2);
+    }
+    return pricePer;
+  };
+  function formatNumber(number) {
+    if (number >= 1000000000000000) {
+      return number / 1000000000000000 + " tỷ";
+    } else if (number >= 1000000000) {
+      return (number / 1000000000).toFixed(2) + " tỷ";
+    } else if (number >= 1000000) {
+      return (number / 1000000).toFixed(2) + " triệu";
+    }
+    return number.toString();
+  }
   return (
     <CardFull>
       <CardImage>
         <img
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          src="https://file4.batdongsan.com.vn/crop/846x423/2023/06/17/20230617145755-fb62_wm.jpg"
+          style={{
+            maxWidth: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+          }}
+          src={data.link_image}
         />
       </CardImage>
       <CardInfo>
         <CardInfoContent>
           <CardTitle>
-            Cho con học New York City trong tháng VC em bán căn góc 73m2 giá 2.3
-            tỷ full phí
-            <MobileOnCard> 0939 720 039</MobileOnCard>
+            {data.title}
+            {data.phone_contact !== "" && (
+              <MobileOnCard>
+                {" "}
+                {Number.isInteger(data.phone_contact)
+                  ? "0" + data.phone_contact
+                  : data.phone_contact}
+              </MobileOnCard>
+            )}
           </CardTitle>
 
           <div>
             <CardConfig>
-              <CardConfigPrice>1,8 tỷ</CardConfigPrice>
+              <CardConfigPrice>
+                {formatNumber(parseInt(data.price))}
+              </CardConfigPrice>
               <CardConfigDot>.</CardConfigDot>
-              <CardConfigArea>53 m²</CardConfigArea>
+              <CardConfigArea>{Math.floor(data.square)} m²</CardConfigArea>
               <CardConfigDot>.</CardConfigDot>
-              <CardConfigPricePerM2>33,96 tr/m²</CardConfigPricePerM2>
+              <CardConfigPricePerM2>
+                {pricePerProcess(data)} tr/m²
+              </CardConfigPricePerM2>
               <CardConfigDot>.</CardConfigDot>
               <CardRoom>
-                <Tooltip placement="bottom" title="1 Phòng ngủ">
-                  <CardRoomSpan>1</CardRoomSpan>
+                <Tooltip
+                  placement="bottom"
+                  title={`${
+                    data?.bedroom !== "0" ? data?.bedroom : "1"
+                  } Phòng ngủ`}
+                >
+                  <CardRoomSpan>
+                    {data?.bedroom !== "0" ? data?.bedroom : "1"}
+                  </CardRoomSpan>
                   <FontAwesomeIcon icon={faBed} style={{ color: "#707070" }} />
                 </Tooltip>
               </CardRoom>
               <CardConfigDot>.</CardConfigDot>
               <CardRoom>
-                <Tooltip placement="bottom" title="1 WC">
-                  <CardRoomSpan>1</CardRoomSpan>
+                <Tooltip
+                  placement="bottom"
+                  title={`${data?.bathroom !== "0" ? data?.bathroom : "1"} WC`}
+                >
+                  <CardRoomSpan>
+                    {data?.bathroom !== "0" ? data?.bathroom : "1"}
+                  </CardRoomSpan>
                   <FontAwesomeIcon icon={faBath} style={{ color: "#707070" }} />
                 </Tooltip>
               </CardRoom>
               <CardConfigDot>.</CardConfigDot>
-              <CardLocation>Quận 7, Hồ Chí Minh</CardLocation>
+              <CardLocation>
+                {data.district}, {data.province}
+              </CardLocation>
             </CardConfig>
           </div>
-          <CardDescription>
-            Giá bán: Từ 1,8 tỷ/căn 1PN, 1WC 53m². + Giá bán: Từ 2,2 tỷ/căn 2PN
-            67m². + Ngân hàng hỗ trợ trong vòng 20 năm với 70% giá trị căn
-            hộ.Thông tin căn hộ Q7 Saigon Riverside: + Vị trí: Mặt tiền đường
-            Đào Trí, Phường Phú Thuận, Quận 7, TP. HCM. Với vị thế 3 mặt view
-            sông, liền kề Phú Mỹ Hưng. Căn hộ Q7 Saigon Riverside được bao bọc
-            bởi môi trường trong là...
-          </CardDescription>
+          <CardDescription>{data.description.slice(0, 200)}...</CardDescription>
         </CardInfoContent>
         <CardContact>
           <CardPublishedInfo>
             <CardAvatar>
-              <ProfileAvatarNoPhoto>H</ProfileAvatarNoPhoto>
+              <ProfileAvatarNoPhoto>
+                {data.name_contact.split(" ").pop().charAt(0)}
+              </ProfileAvatarNoPhoto>
             </CardAvatar>
-            <ProfileName>&lrm;Lê Xuân Hữu</ProfileName>
+            <ProfileName>&lrm;{data.name_contact}</ProfileName>
             <ProfileTimeUpdate>
-              <span>Đăng hôm qua</span>
+              <span>{data.date}</span>
             </ProfileTimeUpdate>
           </CardPublishedInfo>
           <ButtonGroup>
             <Space wrap>
               <ButtomView>Xem thêm</ButtomView>
-              <ButtomView>Bài viết gốc</ButtomView>
+              <ButtomView onClick={() => window.open(data.url_page, "_blank")}>
+                Bài viết gốc
+              </ButtomView>
             </Space>
           </ButtonGroup>
         </CardContact>
