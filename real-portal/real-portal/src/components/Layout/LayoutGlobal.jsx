@@ -5,8 +5,10 @@ import {
 } from "@ant-design/icons";
 import RealIcon from "../../assets/image/real-estate.png";
 import Home from "../Home";
+import Predict from "../Predict";
 import { Layout, Menu, theme } from "antd";
 import { useState } from "react";
+import VisualData from "../VisualData";
 const { Header, Content, Footer } = Layout;
 const LayoutGlobal = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -66,18 +68,20 @@ const LayoutGlobal = () => {
         style={{
           margin: "16px 16px",
           padding: 24,
-          minHeight: 900,
+          minHeight: 1000,
           background: colorBgContainer,
         }}
       >
-       <Home/>
+        {/* <Home/> */}
+        <VisualData />
+        {/* <Predict/> */}
       </Content>
       <Footer
         style={{
           textAlign: "center",
         }}
       >
-        Ant Design ©2023 Created by Ant UED
+        Thông tin chung cư toàn quốc © 2023 SangNV
       </Footer>
     </Layout>
   );

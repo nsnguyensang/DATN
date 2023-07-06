@@ -220,3 +220,124 @@ export const ButtomView = styled(Button)`
     border: 1px solid #1dbabf !important;
   }
 `;
+export const ImageCarousel = styled.div`
+  height: 340px;
+  color: #fff;
+  line-height: 340px;
+  text-align: center;
+  background: #0000004d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+`;
+export const TitleDetail = styled.h1`
+  font-family: "Lexend Medium", Roboto, Arial !important;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: normal !important;
+  letter-spacing: -0.2px;
+  color: #2c2c2c;
+  display: block;
+`;
+
+export const AddressDetail = styled.span`
+  font-family: "Roboto Regular", Roboto, Arial !important;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: normal !important;
+  color: #2c2c2c;
+  display: block;
+  margin-top: 8px;
+`;
+export const ShortInfo = styled.div`
+  display: flex;
+  border-top: 1px solid #f2f2f2;
+  border-bottom: 1px solid #f2f2f2;
+  padding: 15px 0px;
+  box-sizing: border-box;
+  margin: 16px 0px;
+`;
+
+export const ShortInfoItem = styled.div`
+  padding-left: ${(props) => (props.left ? props.left : "0px")};
+`;
+
+export const ShortInfoTitle = styled.span`
+  font-family: "Roboto Regular", Roboto, Arial !important;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: normal !important;
+  color: #999;
+  display: block;
+`;
+
+export const ShortInfoValue = styled.span`
+  font-family: "Roboto Medium", Roboto, Arial !important;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: normal !important;
+  color: #2c2c2c;
+  margin-top: 4px;
+  display: block;
+`;
+
+export const ShortInfoExt = styled.span`
+  font-family: "Roboto Regular", Roboto, Arial !important;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: normal !important;
+  color: #505050;
+  display: block;
+`;
+export const DescriptionDetail = styled.div`
+  overflow: hidden;
+  margin-top: 40px;
+`;
+export const DescriptionTitle = styled.span`
+  margin-bottom: 16px;
+  font-family: "Lexend Medium", Roboto, Arial !important;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 550 !important;
+  letter-spacing: -0.2px;
+  color: #2c2c2c;
+  display: block;
+`;
+
+export const DescriptionContent = styled.div`
+  font-family: "Roboto Regular", Roboto, Arial !important;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: normal !important;
+`;
+export const InfoOther = styled.div`
+  border-top: 1px solid #f2f2f2;
+  margin-right: 30px;
+  border-bottom: 1px solid #f2f2f2;
+  width: 310px;
+  float: left;
+`;
+export const InfoOtherItem = styled.div`
+  float: left;
+  margin-top: 10px;
+  margin-left: 16px;
+  width: 128px;
+  font-family: "Roboto Medium", Roboto, Arial !important;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: normal !important;
+  color: #2c2c2c;
+`;
+export const InfoOtherValue = styled.div`
+  float: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 16px;
+  width: calc(100% - 24px - 16px - 128px - 16px);
+  font-family: "Roboto Regular", Roboto, Arial !important;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: normal !important;
+  color: #2c2c2c;
+`;
