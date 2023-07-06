@@ -54,7 +54,8 @@ const CardRealEaste = ({ data }) => {
             maxHeight: "100%",
             objectFit: "contain",
           }}
-          src={data.link_image}
+          // src={data.link_image}
+          src="https://alomuabannhadat.vn/watermark/static1.alomuabannhadat.vn/tindang/2022/11/mua-ban-nha-dat-theo-quan-khu-vuc-1667581665-alomuabannhadat.vn.jpg"
         />
       </CardImage>
       <CardInfo>

@@ -1,18 +1,38 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { SearchOutlined, ReloadOutlined, HomeOutlined } from "@ant-design/icons";
+import { useSearchParams } from "react-router-dom";
+import {
+  SearchOutlined,
+  ReloadOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
 import { Input, Select, Space, Button } from "antd";
 import { SearchBox, HomeFilter, ButtomRefresh, TitleBottom } from "./style";
 
 const SearchAndFilter = () => {
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [inputValue, setInputValue] = useState("");
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+  const handleSubmit = () => {
+    setSearchParams({ searchText: inputValue });
   };
   return (
     <Fragment>
       <SearchBox>
         <Space wrap>
-          <Input style={{ width: "800px" }} addonBefore={<HomeOutlined />} placeholder="Tìm nhanh. VD: Vinhomes Ocean Park" />
-          <Button type="primary" icon={<SearchOutlined />}>
+          <Input
+            style={{ width: "800px" }}
+            addonBefore={<HomeOutlined />}
+            placeholder="Tìm nhanh. VD: Vinhomes Ocean Park"
+            value={inputValue}
+            onChange={handleInputChange}
+          />
+          <Button
+            type="primary"
+            icon={<SearchOutlined />}
+            onClick={handleSubmit}
+          >
             Tìm kiếm
           </Button>
         </Space>

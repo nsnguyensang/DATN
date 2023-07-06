@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from pymongo import MongoClient
 import urllib.parse
 import sys
 import json
 
 app = Flask(__name__)
+CORS(app)
 
 # Thiết lập kết nối tới MongoDB
 client = MongoClient('mongodb+srv://sangnv:sangnv@cluster0.auukqtg.mongodb.net/')
@@ -69,12 +71,20 @@ def search_data():
         'project' : {'$regex': project, '$options': 'i'},
         'bedroom' : {'$regex': bedroom, '$options': 'i'},
     }
+        # Phân trang
+    page = int(data.get('page', 1))  
+    limit = int(data.get('limit', 10)) 
 
-    # Truy vấn dữ liệu từ collection với query tìm kiếm
-    result = list(collection.find(query, {'_id': 0}))
+    skip = (page - 1) * limit
 
-    # Trả về kết quả tìm kiếm dưới dạng JSON
-    return jsonify(result)
+    results = list(collection.find(query, {'_id': 0}).skip(skip).limit(limit))
+    total_results = collection.count_documents(query)
+    return jsonify(
+        {
+        'total': total_results,
+        'data': results
+        }
+        )
 
 
 @app.route('/api/filter', methods=['GET'])
