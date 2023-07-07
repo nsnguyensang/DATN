@@ -61,7 +61,7 @@ def search_data():
     district = data.get('district', '')
     project = data.get('project', '')
     bedroom = data.get('bedroom', '')
-
+    direct = data.get('direct','')
     # Tạo query để tìm kiếm trong trường "title", lọc theo giá, và tìm theo tỉnh/thành phố và quận/huyện
     query = {
         'title': {'$regex': title, '$options': 'i'},
@@ -70,6 +70,7 @@ def search_data():
         'district': {'$regex': district, '$options': 'i'},
         'project' : {'$regex': project, '$options': 'i'},
         'bedroom' : {'$regex': bedroom, '$options': 'i'},
+        'direct' : {'$regex': direct, '$options': 'i'},
     }
         # Phân trang
     page = int(data.get('page', 1))  

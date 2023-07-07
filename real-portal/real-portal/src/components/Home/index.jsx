@@ -8,18 +8,36 @@ import CardRealEaste from "./components/CardRealEaste";
 import DetailRealEaste from "./components/DetailRealEaste";
 const Home = () => {
   const location = useLocation();
-  console.log("loca",location)
   const [total, setTotal] = useState();
   const [data, setData] = useState();
   useEffect(() => {
-    console.log("test")
+    console.log("test");
     const searchParams = new URLSearchParams(location.search);
     const searchText = searchParams.get("searchText") || "";
+    const searchPrice = searchParams.get("searchPrice") || "";
+    const searchBedroom = searchParams.get("searchBedroom") || "";
+    const searchDirection = searchParams.get("searchDirection") || "";
+    const searchSquare = searchParams.get("searchSquare") || "";
+    let minPrice;
+    let maxPrice;
+    let minSquare;
+    let maxSquare;
+    if (searchPrice !== "") {
+      minPrice = parseFloat(searchPrice.split("-")[0]) * 1000000000;
+      maxPrice = parseInt(searchPrice.split("-")[1]) * 1000000000;
+    }
+    if (searchSquare !== "") {
+      minSquare = parseInt(searchSquare.split("-")[0]);
+      maxSquare = parseInt(searchSquare.split("-")[1]);
+    }
     const param = {
       title: searchText,
+      min_price: minPrice,
+      max_price: maxPrice,
+      direct: searchDirection,
       province: "",
       project: "",
-      bedroom: "",
+      bedroom: searchBedroom,
       page: "1",
       limit: "50",
     };
