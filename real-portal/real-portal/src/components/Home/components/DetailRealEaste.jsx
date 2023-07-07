@@ -121,15 +121,13 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
               <InfoOther>
                 <InfoOtherItem>Chiều rộng</InfoOtherItem>
                 <InfoOtherValue>
-                  {data?.width !== "0" || data?.length !== ""? data?.width : "Không xác định"}
+                  {data?.width !== "0" ? data?.width : "Không xác định"}
                 </InfoOtherValue>
               </InfoOther>
               <InfoOther>
                 <InfoOtherItem>Chiều dài</InfoOtherItem>
                 <InfoOtherValue>
-                  {data?.length !== "0" || data?.length !== ""
-                    ? data?.length
-                    : "Không xác định"}
+                  {data?.length !== "0" ? data?.length : "Không xác định"}
                 </InfoOtherValue>
               </InfoOther>
               <InfoOther>
