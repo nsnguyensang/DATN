@@ -34,6 +34,8 @@ const Home = () => {
       title: searchText,
       min_price: minPrice,
       max_price: maxPrice,
+      min_square: minSquare,
+      max_square: maxSquare,
       direct: searchDirection,
       province: "",
       project: "",

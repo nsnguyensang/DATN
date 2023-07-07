@@ -53,6 +53,8 @@ def search_data():
     # Lấy giá trị tối thiểu và tối đa từ dữ liệu
     min_price = float(data.get('min_price', 0))
     max_price = float(data.get('max_price', float('inf')))
+    min_square = float(data.get('min_square', 0))
+    max_square = float(data.get('max_square', float('inf')))
 
     # Lấy giá trị tỉnh/thành phố từ dữ liệu
     province = data.get('province', '')
@@ -66,6 +68,7 @@ def search_data():
     query = {
         'title': {'$regex': title, '$options': 'i'},
         'price': {'$gte': min_price, '$lte': max_price},
+        'square': {'$gte': min_square, '$lte': max_square},
         'province': {'$regex': province, '$options': 'i'},
         'district': {'$regex': district, '$options': 'i'},
         'project' : {'$regex': project, '$options': 'i'},

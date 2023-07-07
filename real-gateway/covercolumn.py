@@ -14,5 +14,8 @@ for document in data:
         # Chuyển đổi chuỗi thành số thực và cập nhật vào cơ sở dữ liệu
         new_price = float(document['price'])
         collection.update_one({'_id': document['_id']}, {'$set': {'price': new_price}})
-
+    if isinstance(document['square'], str):
+        # Chuyển đổi chuỗi thành số thực và cập nhật vào cơ sở dữ liệu
+        new_square = float(document['square'])
+        collection.update_one({'_id': document['_id']}, {'$set': {'square': new_square}})
 print("Đã chuyển đổi kiểu dữ liệu thành công.")
