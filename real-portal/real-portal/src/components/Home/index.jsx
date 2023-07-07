@@ -3,14 +3,16 @@ import { TitlePage, TitleCountReal, LayoutCenter } from "./style";
 import { useLocation } from "react-router-dom";
 import { searchFilterResults } from "../../api/realEasteApi";
 import SearchAndFilter from "./components/SearchAndFilter";
-import { Pagination } from "antd";
+import { Spin } from "antd";
 import CardRealEaste from "./components/CardRealEaste";
 import DetailRealEaste from "./components/DetailRealEaste";
 const Home = () => {
   const location = useLocation();
   const [total, setTotal] = useState();
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(true);
     const searchParams = new URLSearchParams(location.search);
     const searchText = searchParams.get("searchText") || "";
     const searchPrice = searchParams.get("searchPrice") || "";
@@ -63,6 +65,9 @@ const Home = () => {
       const results = await searchFilterResults(param);
       setTotal(results.total.toLocaleString());
       setData(results.data);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     };
     fetchSearch();
   }, [location]);
@@ -74,7 +79,10 @@ const Home = () => {
       <SearchAndFilter />
       <LayoutCenter>
         <TitlePage>Tìm kiếm chung cư trên toàn quốc</TitlePage>
-        <TitleCountReal>Tìm thấy {total} bất động sản.</TitleCountReal>
+        {!loading && (
+          <TitleCountReal>Tìm thấy {total} bất động sản.</TitleCountReal>
+        )}
+
         {/* <Pagination
           total={parseInt(total)}
           showTotal={(total) => (
@@ -84,9 +92,19 @@ const Home = () => {
           defaultCurrent={1}
         /> */}
       </LayoutCenter>
-      {data?.map((item, index) => (
-        <CardRealEaste data={item} />
-      ))}
+      {loading && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "300px",
+          }}
+        >
+          <Spin size="large" tip="Loading..." />
+        </div>
+      )}
+      {!!!loading && data?.map((item, index) => <CardRealEaste data={item} />)}
       {/* <DetailRealEaste /> */}
     </Fragment>
   );
