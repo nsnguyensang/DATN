@@ -7,38 +7,20 @@ import json
 
 app = Flask(__name__)
 CORS(app)
-
 # Thiết lập kết nối tới MongoDB
-client = MongoClient('mongodb+srv://sangnv:sangnv@cluster0.auukqtg.mongodb.net/')
+client = MongoClient(
+    'mongodb+srv://sangnv:sangnv@cluster0.auukqtg.mongodb.net/')
 db = client['realEstate']  # Thay đổi tên database tùy theo mong muốn
-collection = db['estateCollection']  # Thay đổi tên collection tùy theo mong muốn
+# Thay đổi tên collection tùy theo mong muốn
+collection = db['estateCollection']
 
 if sys.stdout.encoding != 'utf-8':
-    sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1)
+    sys.stdout = open(sys.stdout.fileno(), mode='w',
+                      encoding='utf-8', buffering=1)
 
 # API gọi dữ liệu phân trang
 
-@app.route('/api/data', methods=['GET'])
-def get_data():
-    # Lấy tham số truy vấn từ URL
-    page = int(request.args.get('page', 1))
-    per_page = int(request.args.get('per_page', 100))
 
-    # Tính toán vị trí bắt đầu và kết thúc của trang
-    start_index = (page - 1) * per_page
-    end_index = start_index + per_page
-
-    # Truy vấn dữ liệu từ collection
-    data = list(collection.find({}, {'_id': 0}).skip(start_index).limit(per_page))
-
-    # In ra dữ liệu
-    # for item in data:
-    #     print(item)
-
-    # Trả về dữ liệu dưới dạng JSON
-    return jsonify(data)
-
-# API filter search
 @app.route('/api/search', methods=['POST'])
 def search_data():
     # Lấy dữ liệu từ yêu cầu POST
@@ -46,7 +28,7 @@ def search_data():
 
     # Lấy từ khóa tìm kiếm từ dữ liệu
     encoded_title = data.get('title', '')
-    
+
     # Giải mã từ khóa
     title = urllib.parse.unquote(encoded_title)
 
@@ -63,7 +45,8 @@ def search_data():
     district = data.get('district', '')
     project = data.get('project', '')
     bedroom = data.get('bedroom', '')
-    direct = data.get('direct','')
+    direct = data.get('direct', '')
+    ward = data.get('ward', '')
     # Tạo query để tìm kiếm trong trường "title", lọc theo giá, và tìm theo tỉnh/thành phố và quận/huyện
     query = {
         'title': {'$regex': title, '$options': 'i'},
@@ -71,13 +54,14 @@ def search_data():
         'square': {'$gte': min_square, '$lte': max_square},
         'province': {'$regex': province, '$options': 'i'},
         'district': {'$regex': district, '$options': 'i'},
-        'project' : {'$regex': project, '$options': 'i'},
-        'bedroom' : {'$regex': bedroom, '$options': 'i'},
-        'direct' : {'$regex': direct, '$options': 'i'},
+        'ward': {'$regex': ward, '$options': 'i'},
+        'project': {'$regex': project, '$options': 'i'},
+        'bedroom': {'$regex': bedroom, '$options': 'i'},
+        'direct': {'$regex': direct, '$options': 'i'},
     }
-        # Phân trang
-    page = int(data.get('page', 1))  
-    limit = int(data.get('limit', 10)) 
+    # Phân trang
+    page = int(data.get('page', 1))
+    limit = int(data.get('limit', 10))
 
     skip = (page - 1) * limit
 
@@ -85,10 +69,10 @@ def search_data():
     total_results = collection.count_documents(query)
     return jsonify(
         {
-        'total': total_results,
-        'data': results
+            'total': total_results,
+            'data': results
         }
-        )
+    )
 
 
 @app.route('/api/filter', methods=['GET'])
@@ -107,6 +91,7 @@ def filter_data():
 
     # Trả về kết quả lọc dữ liệu dưới dạng JSON
     return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run()

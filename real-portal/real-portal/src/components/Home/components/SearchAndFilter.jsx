@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
+import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import {
   SearchOutlined,
@@ -14,6 +15,7 @@ import {
 import { Input, Select, Space, Button } from "antd";
 import { SearchBox, HomeFilter, ButtomRefresh, TitleBottom } from "./style";
 
+const { Option } = Select;
 const SearchAndFilter = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [inputValue, setInputValue] = useState("");
@@ -21,6 +23,65 @@ const SearchAndFilter = () => {
   const [selectedBed, setSelectedBed] = useState("");
   const [selectedDirection, setSelectedDirection] = useState("");
   const [selectedSquare, setSelectedSquare] = useState("");
+  //api tỉnh thành, quận huyện
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
+
+  useEffect(() => {
+    callAPI("https://provinces.open-api.vn/api/?depth=1");
+  }, []);
+
+  const callAPI = (api) => {
+    axios.get(api).then((response) => {
+      setCities(response.data);
+    });
+  };
+
+  const callApiDistrict = (api) => {
+    axios.get(api).then((response) => {
+      setDistricts(response.data.districts);
+    });
+  };
+
+  const callApiWard = (api) => {
+    axios.get(api).then((response) => {
+      setWards(response.data.wards);
+    });
+  };
+
+  const handleCityChange = (value, option) => {
+    if (value !== undefined) {
+      setSelectedDistrict("");
+      setSelectedWard("");
+      const selectedCityId = value;
+      setSelectedCity(option.children);
+      callApiDistrict(
+        `https://provinces.open-api.vn/api/p/${selectedCityId}?depth=2`
+      );
+    }
+  };
+
+  const handleDistrictChange = (value, option) => {
+    if (value !== undefined) {
+      setSelectedWard("");
+      const selectedDistrictId = value;
+      setSelectedDistrict(option.children);
+      callApiWard(
+        `https://provinces.open-api.vn/api/d/${selectedDistrictId}?depth=2`
+      );
+    }
+  };
+
+  const handleWardChange = (value, option) => {
+    if (value !== undefined) {
+      setSelectedWard(option.children);
+    }
+  };
+
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
@@ -40,6 +101,15 @@ const SearchAndFilter = () => {
     }
     if (selectedSquare !== "" && selectedSquare) {
       params.searchSquare = selectedSquare;
+    }
+    if (selectedCity !== "" && selectedCity) {
+      params.searchProvince = selectedCity;
+    }
+    if (selectedDistrict !== "" && selectedDistrict) {
+      params.searchDistrict = selectedDistrict;
+    }
+    if (selectedWard !== "" && selectedWard) {
+      params.searchWard = selectedWard;
     }
     setSearchParams(params);
   };
@@ -69,12 +139,22 @@ const SearchAndFilter = () => {
   const handleClearSquare = () => {
     setSelectedSquare("");
   };
+  const handleRemoveAllFilter = () => {
+    setSelectedDirection("");
+    setInputValue("");
+    setSelectedBed("");
+    setSelectedPrice("");
+    setSelectedSquare("");
+    setSelectedDistrict("");
+    setSelectedCity("");
+    setSelectedWard("");
+  };
   return (
     <Fragment>
       <SearchBox>
         <Space wrap>
           <Input
-            style={{ width: "800px" }}
+            style={{ width: "886px" }}
             addonBefore={<HomeOutlined />}
             placeholder="Tìm nhanh. VD: Vinhomes Ocean Park"
             value={inputValue}
@@ -91,22 +171,66 @@ const SearchAndFilter = () => {
         <HomeFilter>
           <Space wrap>
             <Select
-              placeholder="Địa điểm"
+              placeholder="Tỉnh/TP"
               style={{
-                width: 170,
+                width: 160,
               }}
               allowClear
-              options={[
-                {
-                  value: "lucy",
-                  label: "Lucy",
-                },
-              ]}
-            />
+              value={selectedCity || undefined}
+              onChange={handleCityChange}
+              onClear={() => {
+                setSelectedCity("");
+                setSelectedWard("");
+                setSelectedDistrict("");
+              }}
+            >
+              {cities.map((city) => (
+                <Option key={city.code} value={city.code}>
+                  {city.name}
+                </Option>
+              ))}
+            </Select>
+
+            <Select
+              placeholder="Quận/Huyện"
+              style={{
+                width: 160,
+              }}
+              allowClear
+              value={selectedDistrict || undefined}
+              onChange={handleDistrictChange}
+              onClear={() => {
+                setSelectedDistrict("");
+                setSelectedWard("");
+              }}
+            >
+              {districts.map((district) => (
+                <Option key={district.code} value={district.code}>
+                  {district.name}
+                </Option>
+              ))}
+            </Select>
+
+            <Select
+              placeholder="Phường/Xã"
+              value={selectedWard || undefined}
+              style={{
+                width: 160,
+              }}
+              allowClear
+              onChange={handleWardChange}
+              onClear={() => setSelectedWard("")}
+            >
+              {wards.map((ward) => (
+                <Option key={ward.code} value={ward.code}>
+                  {ward.name}
+                </Option>
+              ))}
+            </Select>
             <Select
               placeholder="Mức giá"
               style={{
-                width: 170,
+                width: 110,
               }}
               allowClear
               options={priceDataSelect}
@@ -116,7 +240,7 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Diện tích"
               style={{
-                width: 170,
+                width: 110,
               }}
               allowClear
               options={squareDataSelect}
@@ -126,8 +250,9 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Phòng ngủ"
               style={{
-                width: 170,
+                width: 110,
               }}
+              value={selectedBed || undefined}
               allowClear
               options={bedroomDataSelect}
               onChange={handleBedroomChange}
@@ -136,14 +261,20 @@ const SearchAndFilter = () => {
             <Select
               placeholder="Hướng nhà"
               style={{
-                width: 170,
+                width: 110,
               }}
               allowClear
+              value={selectedDirection || undefined}
               options={directionDataSelect}
               onChange={handleDirectionChange}
               onClear={handleClearDirection}
             />
-            <Button type="primary" icon={<ReloadOutlined />} size="small" />
+            <Button
+              type="primary"
+              icon={<ReloadOutlined />}
+              size="small"
+              onClick={handleRemoveAllFilter}
+            />
           </Space>
         </HomeFilter>
       </SearchBox>

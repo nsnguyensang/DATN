@@ -11,17 +11,22 @@ const Home = () => {
   const [total, setTotal] = useState();
   const [data, setData] = useState();
   useEffect(() => {
-    console.log("test");
     const searchParams = new URLSearchParams(location.search);
     const searchText = searchParams.get("searchText") || "";
     const searchPrice = searchParams.get("searchPrice") || "";
     const searchBedroom = searchParams.get("searchBedroom") || "";
     const searchDirection = searchParams.get("searchDirection") || "";
     const searchSquare = searchParams.get("searchSquare") || "";
+    const searchProvince = searchParams.get("searchProvince") || "";
+    const searchDistrict = searchParams.get("searchDistrict") || "";
+    const searchWard = searchParams.get("searchWard") || "";
     let minPrice;
     let maxPrice;
     let minSquare;
     let maxSquare;
+    let province;
+    let district;
+    let ward;
     if (searchPrice !== "") {
       minPrice = parseFloat(searchPrice.split("-")[0]) * 1000000000;
       maxPrice = parseInt(searchPrice.split("-")[1]) * 1000000000;
@@ -30,6 +35,15 @@ const Home = () => {
       minSquare = parseInt(searchSquare.split("-")[0]);
       maxSquare = parseInt(searchSquare.split("-")[1]);
     }
+    if (searchProvince !== "") {
+      province = searchProvince.replace(/(Tỉnh|Thành phố)\s*/, "");
+    }
+    if (searchDistrict !== "") {
+      district = searchDistrict.replace(/(Quận|Huyện|Thành phố)\s*/, "");
+    }
+    if (searchWard !== "") {
+      ward = searchWard.replace(/(Xã|Phường)\s*/, "");
+    }
     const param = {
       title: searchText,
       min_price: minPrice,
@@ -37,7 +51,9 @@ const Home = () => {
       min_square: minSquare,
       max_square: maxSquare,
       direct: searchDirection,
-      province: "",
+      district: district,
+      province: province,
+      ward: ward,
       project: "",
       bedroom: searchBedroom,
       page: "1",
