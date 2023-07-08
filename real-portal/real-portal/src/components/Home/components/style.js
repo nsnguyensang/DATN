@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button } from "antd";
+import { Button, Drawer } from "antd";
 
 export const SearchBox = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
@@ -344,4 +344,10 @@ export const InfoOtherValue = styled.div`
   line-height: 24px;
   font-weight: normal !important;
   color: #2c2c2c;
+`;
+
+export const DrawerDetail = styled(Drawer)`
+  .ant-drawer-body {
+    padding-top: 0px !important;
+  }
 `;
