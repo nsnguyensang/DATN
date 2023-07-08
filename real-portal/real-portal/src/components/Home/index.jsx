@@ -3,7 +3,7 @@ import { TitlePage, TitleCountReal, LayoutCenter } from "./style";
 import { useLocation } from "react-router-dom";
 import { searchFilterResults } from "../../api/realEasteApi";
 import SearchAndFilter from "./components/SearchAndFilter";
-import { Spin } from "antd";
+import { Spin, Pagination } from "antd";
 import CardRealEaste from "./components/CardRealEaste";
 import DetailRealEaste from "./components/DetailRealEaste";
 const Home = () => {
@@ -11,6 +11,14 @@ const Home = () => {
   const [total, setTotal] = useState();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const pageSize = 50; // Số lượng bản ghi trên mỗi trang
+
+  // Xử lý sự kiện khi người dùng thay đổi trang
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
   useEffect(() => {
     setLoading(true);
     const searchParams = new URLSearchParams(location.search);
@@ -58,11 +66,13 @@ const Home = () => {
       ward: ward,
       project: "",
       bedroom: searchBedroom,
-      page: "1",
+      page: currentPage,
       limit: "50",
     };
     const fetchSearch = async () => {
       const results = await searchFilterResults(param);
+      setTotalRecords(results.total);
+      console.log("total", results.total);
       setTotal(results.total.toLocaleString());
       setData(results.data);
       setTimeout(() => {
@@ -70,27 +80,37 @@ const Home = () => {
       }, 500);
     };
     fetchSearch();
-  }, [location]);
+  }, [location, currentPage]);
   const onChange = (pageNumber) => {
     console.log("Page: ", pageNumber);
   };
+
   return (
     <Fragment>
       <SearchAndFilter />
       <LayoutCenter>
         <TitlePage>Tìm kiếm chung cư trên toàn quốc</TitlePage>
-        {!loading && (
+        <div style={{ marginBottom: "10px" }}>
+          <Pagination
+            current={currentPage}
+            total={totalRecords}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showSizeChanger={false}
+            showTotal={() => (
+              <TitleCountReal>
+                Đang xem{" "}
+                {currentPage * 50 < totalRecords
+                  ? currentPage * 50
+                  : totalRecords}
+                /{total} bất động sản
+              </TitleCountReal>
+            )} // Hiển thị tổng số bản ghi
+          />
+        </div>
+        {/* {!loading && (
           <TitleCountReal>Tìm thấy {total} bất động sản.</TitleCountReal>
-        )}
-
-        {/* <Pagination
-          total={parseInt(total)}
-          showTotal={(total) => (
-            <TitleCountReal>Tìm được {total} bất động sản</TitleCountReal>
-          )}
-          defaultPageSize={100}
-          defaultCurrent={1}
-        /> */}
+        )} */}
       </LayoutCenter>
       {loading && (
         <div

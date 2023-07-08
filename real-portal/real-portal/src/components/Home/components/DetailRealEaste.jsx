@@ -46,6 +46,13 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
   const handleImageError = (event) => {
     event.target.src = fallbackImage;
   };
+  const processDistrict = (value) => {
+    if (!isNaN(value)) {
+      return "Quận " + value;
+    } else {
+      return value;
+    }
+  };
   return (
     <DrawerDetail
       title="Thông tin chi tiết"
@@ -72,18 +79,20 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   />
                 </ImageCarousel>
               </div>
-              <div>
+              {/* <div>
                 <ImageCarousel>2</ImageCarousel>
               </div>
               <div>
                 <ImageCarousel>3</ImageCarousel>
-              </div>
+              </div> */}
             </Carousel>
             <div className="web-detail">
               <TitleDetail>{data.title}</TitleDetail>
               <AddressDetail>
-                Dự án Mipec Rubik 360, Đường Xuân Thủy, Phường Dịch Vọng Hậu,
-                Cầu Giấy, Hà Nội
+                {data?.project === "None" ? "" : "Dự án " + data?.project},{" "}
+                {data?.street === "None" ? "" : "Đường " + data?.street},{" "}
+                {data?.ward === "None" ? "" : data?.ward},{" "}
+                {processDistrict(data?.district)}, {data?.province}
               </AddressDetail>
               <ShortInfo>
                 <ShortInfoItem>
@@ -134,7 +143,9 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Mức giá</InfoOtherItem>
-                    <InfoOtherValue>{pricePerProcess(data)} tỷ</InfoOtherValue>
+                    <InfoOtherValue>
+                      {formatNumber(parseInt(data.price))}
+                    </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Chiều rộng</InfoOtherItem>
@@ -212,11 +223,10 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                 </div>
               </DescriptionDetail>
             </div>
-            <ReactJson src={data} />
           </LayoutCenter>
         </TabPane>
         <TabPane tab="Json" key="2">
-          <ReactJson src={data} />
+          <ReactJson src={data} displayDataTypes={false} />
         </TabPane>
       </Tabs>
     </DrawerDetail>

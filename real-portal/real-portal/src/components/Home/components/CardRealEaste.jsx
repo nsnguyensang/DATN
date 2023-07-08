@@ -47,6 +47,13 @@ const CardRealEaste = ({ data }) => {
     }
     return number.toString();
   }
+  const processDistrict = (value) => {
+    if (!isNaN(value)) {
+      return "Quận " + value;
+    } else {
+      return value;
+    }
+  };
   const fallbackImage =
     "https://file4.batdongsan.com.vn/resize/1275x717/2023/04/05/20230405163430-2777_wm.jpg";
 
@@ -128,7 +135,7 @@ const CardRealEaste = ({ data }) => {
                 </CardRoom>
                 <CardConfigDot>.</CardConfigDot>
                 <CardLocation>
-                  {data.district}, {data.province}
+                  {processDistrict(data?.district)}, {data.province}
                 </CardLocation>
               </CardConfig>
             </div>
