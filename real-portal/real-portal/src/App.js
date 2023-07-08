@@ -17,7 +17,7 @@ const App = () => {
           style={{
             margin: "16px 16px",
             padding: 24,
-            minHeight: 1000,
+            minHeight: 700,
             background: colorBgContainer,
           }}
         >
@@ -30,6 +30,7 @@ const App = () => {
         <Footer
           style={{
             textAlign: "center",
+            paddingTop: "6px",
           }}
         >
           Thông tin chung cư toàn quốc © 2023 SangNV

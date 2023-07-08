@@ -236,7 +236,29 @@ const Predict = () => {
                   </Form.Item>
                 </Col>
               </Row>
-
+              <Form.Item
+                name="Mô hình dự đoán"
+                label="Mô hình dự đoán"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
+                <Select
+                  defaultValue="knn"
+                  style={{
+                    width: 378,
+                  }}
+                  // onChange={handleChange}
+                  options={[
+                    {
+                      value: "knn",
+                      label: "KNN (K-Nearest Neighbors)",
+                    },
+                  ]}
+                />
+              </Form.Item>
               <Form.Item>
                 <Row gutter={24}>
                   <Col span={20}>
