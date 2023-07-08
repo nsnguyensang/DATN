@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed, faBath } from "@fortawesome/free-solid-svg-icons";
-import { Tooltip, Space } from "antd";
+import { Tooltip, Space, Spin } from "antd";
 import {
   CardFull,
   CardImage,
@@ -30,6 +30,7 @@ import {
 import DetailRealEaste from "./DetailRealEaste";
 const CardRealEaste = ({ data }) => {
   const [showModalDetail, setShowModalDetail] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(true);
   const pricePerProcess = (idx) => {
     let pricePer = (idx?.price / (parseInt(idx?.square) * 1000000)).toFixed(2);
     if (pricePer > 1000000) {
@@ -47,6 +48,9 @@ const CardRealEaste = ({ data }) => {
     }
     return number.toString();
   }
+  const handleImageLoad = () => {
+    setLoadingImage(false);
+  };
   const processDistrict = (value) => {
     if (!isNaN(value)) {
       return "Quận " + value;
@@ -54,23 +58,46 @@ const CardRealEaste = ({ data }) => {
       return value;
     }
   };
+  const processLinkImage = (link) => {
+    let linkProcess;
+    linkProcess = link
+      .replace("https://batdongsan.so", "")
+      .replace("https://alomuabannhadat.vn/", "");
+    // console.log(linkProcess);
+    return linkProcess;
+  };
   const fallbackImage =
     "https://file4.batdongsan.com.vn/resize/1275x717/2023/04/05/20230405163430-2777_wm.jpg";
 
   const handleImageError = (event) => {
     event.target.src = fallbackImage;
+    setLoadingImage(false);
   };
   return (
     <Fragment>
       <CardFull>
         <CardImage>
+          {loadingImage && (
+            <div
+              style={{
+                position: "absolute",
+                top: "25%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <Spin size="small" />
+            </div>
+          )}
           <img
             style={{
               maxWidth: "100%",
               maxHeight: "100%",
               objectFit: "contain",
+              display: loadingImage ? "none" : "block",
             }}
-            src={data.link_image}
+            src={processLinkImage(data.link_image)}
+            onLoad={handleImageLoad}
             onError={handleImageError}
           />
         </CardImage>
@@ -140,7 +167,8 @@ const CardRealEaste = ({ data }) => {
               </CardConfig>
             </div>
             <CardDescription>
-              {data.description.slice(0, 200)}...
+              {data?.description.slice(0, 200) || data?.content.slice(0, 200)}
+              ...
             </CardDescription>
           </CardInfoContent>
           <CardContact>

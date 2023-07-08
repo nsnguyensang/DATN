@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { LayoutCenter } from "../style";
-import { Carousel, Drawer, Tabs } from "antd";
+import { Carousel, Drawer, Tabs, Spin } from "antd";
 import ReactJson from "react-json-view";
 import {
   AddressDetail,
@@ -23,6 +23,7 @@ import {
 
 const { TabPane } = Tabs;
 const DetailRealEaste = ({ data, isOpen, onClose }) => {
+  const [loadingImage, setLoadingImage] = useState(true);
   const pricePerProcess = (idx) => {
     let pricePer = (idx?.price / (parseInt(idx?.square) * 1000000)).toFixed(2);
     if (pricePer > 1000000) {
@@ -45,6 +46,7 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
 
   const handleImageError = (event) => {
     event.target.src = fallbackImage;
+    setLoadingImage(false);
   };
   const processDistrict = (value) => {
     if (!isNaN(value)) {
@@ -52,6 +54,18 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
     } else {
       return value;
     }
+  };
+  const handleImageLoad = () => {
+    setLoadingImage(false);
+  };
+  const processLinkImage = (link) => {
+    // setLoadingImage(true);
+    let linkProcess;
+    linkProcess = link
+      .replace("https://batdongsan.so", "")
+      .replace("https://alomuabannhadat.vn/", "");
+    // console.log(linkProcess);
+    return linkProcess;
   };
   return (
     <DrawerDetail
@@ -68,13 +82,27 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
             <Carousel autoplay>
               <div>
                 <ImageCarousel>
+                  {loadingImage && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                    >
+                      <Spin size="small" />
+                    </div>
+                  )}
                   <img
                     style={{
                       maxWidth: "100%",
                       maxHeight: "100%",
                       objectFit: "contain",
+                      display: loadingImage ? "none" : "block",
                     }}
-                    src={data.link_image}
+                    src={processLinkImage(data.link_image)}
+                    onLoad={handleImageLoad}
                     onError={handleImageError}
                   />
                 </ImageCarousel>
@@ -130,7 +158,9 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
               </ShortInfo>
               <DescriptionDetail>
                 <DescriptionTitle>Thông tin mô tả</DescriptionTitle>
-                <DescriptionContent>{data.description}</DescriptionContent>
+                <DescriptionContent>
+                  {data?.description || data?.content}
+                </DescriptionContent>
               </DescriptionDetail>
               <DescriptionDetail>
                 <DescriptionTitle>Đặc điểm bất động sản</DescriptionTitle>
