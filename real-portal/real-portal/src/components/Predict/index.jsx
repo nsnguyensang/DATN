@@ -1,6 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { ReloadOutlined } from "@ant-design/icons";
+import { predictHouseKNN } from "../../api/realEasteApi";
+import { useSearchParams } from "react-router-dom";
 import {
   LayoutPredict,
   TitlePredict,
@@ -18,25 +20,45 @@ import {
   Row,
   Col,
   Space,
+  notification,
 } from "antd";
 const { Option } = Select;
 
 const Predict = () => {
   const [form] = Form.useForm();
+  const [searchParams, setSearchParams] = useSearchParams();
   //api tỉnh thành, quận huyện
-  const [cities, setCities] = useState([]);
+  const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
+  const [pricePredict, setPricePredict] = useState("");
+  const [square, setSquare] = useState();
+  const [api, contextHolder] = notification.useNotification();
   useEffect(() => {
     callAPI("https://provinces.open-api.vn/api/?depth=1");
   }, []);
-
+  const openNotificationWithIcon = (type) => {
+    api[type]({
+      message: "Chưa xác định được giá tại vị trí vừa chọn!",
+      description:
+        'Bộ dữ liệu dùng đào tạo mô hình chưa có thông tin tại vị trí đó. Bạn có thể chọn vị trí khác để xem giá. ',
+    });
+  };
+  const fetchPredictHouse = async (param) => {
+    try {
+      const results = await predictHouseKNN(param);
+      setPricePredict(results.prediction);
+    } catch (e) {
+      setPricePredict("");
+      openNotificationWithIcon("error");
+    }
+  };
   const callAPI = (api) => {
     axios.get(api).then((response) => {
-      setCities(response.data);
+      setProvinces(response.data);
     });
   };
 
@@ -80,15 +102,55 @@ const Predict = () => {
       setSelectedWard(option.children);
     }
   };
-  const onFinish = (values) => {
-    console.log(values);
+  const onFinish = () => {
+    form.validateFields().then((values) => {
+      const selectFields = ["province", "district", "ward"]; // Danh sách các trường Select cần xử lý
+      const selectedValues = {};
+      const selectedLabels = {};
+
+      selectFields.forEach((field) => {
+        selectedValues[field] = values[field];
+        selectedLabels[field] = getLabelFromValue(values[field], field);
+      });
+      const result = {};
+
+      for (const key in selectedLabels) {
+        if (selectedLabels.hasOwnProperty(key)) {
+          result[key] = Array.isArray(selectedLabels[key])
+            ? selectedLabels[key]
+            : [selectedLabels[key]];
+        }
+      }
+      setSquare(values.square);
+      setSearchParams({ ...values, ...result });
+      try {
+        fetchPredictHouse({ ...values, ...result });
+      } catch (e) {}
+    });
   };
   const onReset = () => {
     form.resetFields();
+    setPricePredict("")
   };
-
+  const getLabelFromValue = (value, options) => {
+    console.log("form submit", value, options);
+    let selectedOption;
+    if (options === "province")
+      selectedOption = provinces.find((option) => option.code === value);
+    if (options === "district")
+      selectedOption = districts.find((option) => option.code === value);
+    if (options === "ward")
+      selectedOption = wards.find((option) => option.code === value);
+    return selectedOption
+      ? selectedOption.name
+          .replace(/(Tỉnh|Thành phố)\s*/, "")
+          .replace(/(Quận|Huyện)\s*/, "")
+          .replace(/(Phường|Xã)\s*/, "")
+      : "";
+  };
   return (
     <Fragment>
+      {contextHolder}
       <Row gutter={24}>
         <Col span={8}>
           <TitlePredict>Dự đoán giá chung cư</TitlePredict>
@@ -105,7 +167,7 @@ const Predict = () => {
               <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
-                    name="Diện tích"
+                    name="square"
                     label="Diện tích"
                     rules={[
                       {
@@ -119,7 +181,7 @@ const Predict = () => {
                 </Col>
                 <Col span={12}>
                   <Form.Item
-                    name="Số phòng ngủ"
+                    name="bedroom"
                     label="Số phòng ngủ"
                     rules={[
                       {
@@ -134,7 +196,7 @@ const Predict = () => {
               <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
-                    name="Số tầng"
+                    name="floor"
                     label="Số tầng"
                     rules={[
                       {
@@ -147,7 +209,7 @@ const Predict = () => {
                 </Col>
                 <Col span={12}>
                   <Form.Item
-                    name="Tỉnh/Thành phố"
+                    name="province"
                     label="Tỉnh/Thành phố"
                     rules={[
                       {
@@ -168,7 +230,7 @@ const Predict = () => {
                         setSelectedDistrict("");
                       }}
                     >
-                      {cities.map((city) => (
+                      {provinces.map((city) => (
                         <Option key={city.code} value={city.code}>
                           {city.name}
                         </Option>
@@ -180,7 +242,7 @@ const Predict = () => {
               <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
-                    name="Quận/Huyện"
+                    name="district"
                     label="Quận/Huyện"
                     rules={[
                       {
@@ -210,7 +272,7 @@ const Predict = () => {
                 </Col>
                 <Col span={12}>
                   <Form.Item
-                    name="Phường/Xã"
+                    name="ward"
                     label="Phường/Xã"
                     rules={[
                       {
@@ -236,7 +298,7 @@ const Predict = () => {
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item
+              {/* <Form.Item
                 name="Mô hình dự đoán"
                 label="Mô hình dự đoán"
                 rules={[
@@ -258,7 +320,7 @@ const Predict = () => {
                     },
                   ]}
                 />
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item>
                 <Row gutter={24}>
                   <Col span={20}>
@@ -278,11 +340,15 @@ const Predict = () => {
               </Form.Item>
             </Form>
           </PredictBox>
-          <ResultBox>
-            <span style={{ fontSize: "16px" }}>
-              Giá dự đoán: 2 tỷ ~ 35 triệu/m²
-            </span>
-          </ResultBox>
+          {pricePredict !== "" && (
+            <ResultBox>
+              <span style={{ fontSize: "16px" }}>
+                Giá dự đoán: {(pricePredict / 1000000000).toFixed(1)} tỷ ~{" "}
+                {(pricePredict / (square * 1000000)).toFixed(2)} triệu/m²
+              </span>
+            </ResultBox>
+          )}
+          {}
         </Col>
         <Col span={16}>
           <TitlePredict>Bạn có thể quan tâm</TitlePredict>
