@@ -1,7 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { ReloadOutlined } from "@ant-design/icons";
-import { predictHouseKNN } from "../../api/realEasteApi";
+import CardSearch from "./components/CardSearch";
+import { predictHouseKNN, searchFilterResults } from "../../api/realEasteApi";
 import { useSearchParams } from "react-router-dom";
 import {
   LayoutPredict,
@@ -19,9 +20,11 @@ import {
   Select,
   Row,
   Col,
-  Space,
+  Spin,
   notification,
+  Space,
 } from "antd";
+import CardRecomment from "./components/CardSearch";
 const { Option } = Select;
 
 const Predict = () => {
@@ -36,6 +39,10 @@ const Predict = () => {
   const [selectedWard, setSelectedWard] = useState("");
   const [pricePredict, setPricePredict] = useState("");
   const [square, setSquare] = useState();
+  const [loading, setLoading] = useState(false);
+  const [dataRecomment, setDataRecomment] = useState([]);
+  const [totalRecomment, setTotalRecomment] = useState();
+  const [loadingRecomment, setLoadingRecomment] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   useEffect(() => {
     callAPI("https://provinces.open-api.vn/api/?depth=1");
@@ -44,16 +51,46 @@ const Predict = () => {
     api[type]({
       message: "Chưa xác định được giá tại vị trí vừa chọn!",
       description:
-        'Bộ dữ liệu dùng đào tạo mô hình chưa có thông tin tại vị trí đó. Bạn có thể chọn vị trí khác để xem giá. ',
+        "Bộ dữ liệu dùng đào tạo mô hình chưa có thông tin tại vị trí đó. Bạn có thể chọn vị trí khác để xem giá. ",
     });
   };
   const fetchPredictHouse = async (param) => {
+    setLoading(true);
     try {
       const results = await predictHouseKNN(param);
       setPricePredict(results.prediction);
+      setTimeout(() => {
+        setLoading(false);
+        const paramSearch = {
+          min_price: parseFloat(results.prediction) - 300000000,
+          max_price: parseFloat(results.prediction) + 300000000,
+          min_square: param.square - 15,
+          max_square: param.square + 15,
+          district: param.district[0],
+          province: param.province[0],
+          // ward: param.ward[0],
+          page: "1",
+          limit: "9",
+        };
+        console.log("paramRecomment", paramSearch);
+        const fetchSearch = async () => {
+          setLoadingRecomment(true);
+          const dataSearch = await searchFilterResults(paramSearch);
+          setTotalRecomment(dataRecomment.total);
+          setDataRecomment(dataSearch.data);
+        };
+        fetchSearch();
+        setTimeout(() => {
+          setLoadingRecomment(false);
+        }, 500);
+      }, 500);
     } catch (e) {
-      setPricePredict("");
-      openNotificationWithIcon("error");
+      setTimeout(() => {
+        setLoading(false);
+        setLoadingRecomment(false);
+        setPricePredict("");
+        openNotificationWithIcon("error");
+      }, 500);
     }
   };
   const callAPI = (api) => {
@@ -130,7 +167,7 @@ const Predict = () => {
   };
   const onReset = () => {
     form.resetFields();
-    setPricePredict("")
+    setPricePredict("");
   };
   const getLabelFromValue = (value, options) => {
     console.log("form submit", value, options);
@@ -340,7 +377,7 @@ const Predict = () => {
               </Form.Item>
             </Form>
           </PredictBox>
-          {pricePredict !== "" && (
+          {pricePredict !== "" && !loading && (
             <ResultBox>
               <span style={{ fontSize: "16px" }}>
                 Giá dự đoán: {(pricePredict / 1000000000).toFixed(1)} tỷ ~{" "}
@@ -348,11 +385,28 @@ const Predict = () => {
               </span>
             </ResultBox>
           )}
-          {}
+          {loading && <Spin size="small" style={{ marginTop: "10px" }} />}
         </Col>
         <Col span={16}>
           <TitlePredict>Bạn có thể quan tâm</TitlePredict>
-          <RecommentBox></RecommentBox>
+          <RecommentBox>
+            {pricePredict !== "" &&
+              !loading &&
+              !!!loadingRecomment &&
+              dataRecomment.map((itm, index) => <CardSearch data={itm} />)}
+            {loadingRecomment && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "400px",
+                }}
+              >
+                <Spin size="large" />
+              </div>
+            )}
+          </RecommentBox>
         </Col>
       </Row>
     </Fragment>

@@ -44,8 +44,10 @@ export const RecommentBox = styled.div`
   border-radius: 0 4px 4px 4px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   // width: 800px;
-  height: 580px;  
-  padding: 16px;
+  height: 1080px;
+  padding: 20px;
+  padding-left: 40px;
+  padding-right: 0px;
   margin-top: 20px;
 `;
 export const ButtomView = styled(Button)`
