@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from pymongo import MongoClient
 import urllib.parse
@@ -6,6 +6,10 @@ import sys
 import pickle
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import norm
+
 import json
 from typing import Dict, Any
 
@@ -135,7 +139,7 @@ def get_allocation_by_province():
     # Xử lý dữ liệu và tính số lượng phân bổ theo trường "province"
     province_counts = {}
     for item in data:
-        province = item.get('province')
+        province = item.get('project')
         if province:
             province_counts[province] = province_counts.get(province, 0) + 1
 
@@ -146,7 +150,7 @@ def get_allocation_by_province():
     sorted_result = sorted(
         zip(result["labels"], result["counts"]), key=lambda x: x[1], reverse=True)
     # Chỉ lấy ra số lượng giá trị cần thiết
-    sorted_result = sorted_result[:limit]
+    sorted_result = sorted_result[:60]
 
     sorted_labels = [item[0] for item in sorted_result]
     sorted_counts = [item[1] for item in sorted_result]
@@ -184,6 +188,34 @@ def scatter_visual():
         scatter_data.append(scatter_entry)
 
     return jsonify(scatter_data)
+
+
+@app.route('/api/plot-image', methods=["GET"])
+def plot_image():
+    # Truy vấn dữ liệu từ MongoDB
+    data = collection.find({}, {'_id': 0, 'square': 1})
+
+    # Lấy dữ liệu square từ kết quả truy vấn
+    squares = [doc['square'] for doc in data]
+
+    # Vẽ đồ thị
+    sns.distplot(squares, fit=norm)
+
+    # Lấy thông số fit của hàm
+    (mu, sigma) = norm.fit(squares)
+
+    # Tạo chú thích và tiêu đề
+    plt.legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f} )'.format(
+        mu, sigma)], loc='best')
+    plt.ylabel('Frequency')
+    plt.title('Square distribution')
+
+    # Lưu đồ thị vào tệp ảnh
+    image_path = 'C:/Workspace/DATN/real-gateway/plot.png'
+    plt.savefig(image_path)
+
+    # Trả về tệp ảnh
+    return send_file(image_path, mimetype='image/png')
 
 
 if __name__ == '__main__':
