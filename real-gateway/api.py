@@ -7,6 +7,7 @@ import pickle
 import os
 import pandas as pd
 import json
+from typing import Dict, Any
 
 # Load the model
 with open('C:/Workspace/DATN/data-modeling/knn_model2.pkl', 'rb') as file:
@@ -24,8 +25,10 @@ for c in cols:
 app = Flask(__name__)
 CORS(app)
 # Thiết lập kết nối tới MongoDB
+# client = MongoClient(
+#     'mongodb+srv://sangnv:sangnv@cluster0.auukqtg.mongodb.net/')
 client = MongoClient(
-    'mongodb+srv://sangnv:sangnv@cluster0.auukqtg.mongodb.net/')
+    'mongodb://localhost:27017/')
 db = client['realEstate']  # Thay đổi tên database tùy theo mong muốn
 # Thay đổi tên collection tùy theo mong muốn
 collection = db['estateCollection']
@@ -122,22 +125,65 @@ def search_data():
     )
 
 
-@app.route('/api/filter', methods=['GET'])
-def filter_data():
-    # Lấy giá trị tối thiểu và tối đa từ tham số truy vấn
-    min_price = float(request.args.get('min_price', 0))
-    max_price = float(request.args.get('max_price', float('inf')))
+@app.route("/api/allocation-by-province", methods=["GET"])
+def get_allocation_by_province():
+    # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
+    query = {}
+    projection = {'_id': 0}
+    data = list(collection.find(query, projection))
+    limit = int(request.args.get('limit', 20))
+    # Xử lý dữ liệu và tính số lượng phân bổ theo trường "province"
+    province_counts = {}
+    for item in data:
+        province = item.get('province')
+        if province:
+            province_counts[province] = province_counts.get(province, 0) + 1
 
-    # Tạo query để lọc dữ liệu theo giá
-    query = {
-        'price': {'$gte': min_price, '$lte': max_price}
+    result = {
+        "labels": list(province_counts.keys()),
+        "counts": list(province_counts.values())
+    }
+    sorted_result = sorted(
+        zip(result["labels"], result["counts"]), key=lambda x: x[1], reverse=True)
+    # Chỉ lấy ra số lượng giá trị cần thiết
+    sorted_result = sorted_result[:limit]
+
+    sorted_labels = [item[0] for item in sorted_result]
+    sorted_counts = [item[1] for item in sorted_result]
+
+    sorted_result = {
+        "labels": sorted_labels,
+        "counts": sorted_counts
     }
 
-    # Truy vấn dữ liệu từ collection với query lọc
-    data = list(collection.find(query, {'_id': 0}))
+    return jsonify(sorted_result)
 
-    # Trả về kết quả lọc dữ liệu dưới dạng JSON
-    return jsonify(data)
+
+@app.route('/api/scatter-visual', methods=["GET"])
+def scatter_visual():
+    # Lấy trường từ tham số truy vấn (params)
+    field = request.args.get('field')
+
+    # Trường "price" luôn được thêm vào danh sách để so sánh
+    fields: Dict[str, Any] = {'price': 1, field: 1}
+
+    # Truy vấn dữ liệu từ MongoDB
+    data = collection.find({'price': {'$lt':  2e10, '$gt': 50000000}, field: {
+                           '$lt': 300, '$gt': 0}}, {'_id': 0, **fields})
+
+    # Chuẩn bị dữ liệu để trả về
+    scatter_data = []
+    for doc in data:
+        scatter_entry = {}
+        for key, value in fields.items():
+            if key == 'price':
+                scatter_entry[key] = doc[key] / 1000000
+            else:
+                scatter_entry[key] = doc[key]
+
+        scatter_data.append(scatter_entry)
+
+    return jsonify(scatter_data)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,8 @@ import csv
 from pymongo import MongoClient
 
 # Thiết lập kết nối tới MongoDB
-client = MongoClient('mongodb+srv://sangnv:sangnv@cluster0.auukqtg.mongodb.net/')
+# client = MongoClient('mongodb+srv://sangnv:sangnv@cluster0.auukqtg.mongodb.net/')
+client = MongoClient('mongodb://localhost:27017/')
 db = client['realEstate']  # Thay đổi tên database tùy theo mong muốn
 collection = db['estateCollection']  # Thay đổi tên collection tùy theo mong muốn
 

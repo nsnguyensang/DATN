@@ -28,3 +28,35 @@ export const predictHouseKNN = async (param) => {
     console.error("Error:", error);
   }
 };
+
+export const allocationByProvince = async (limit) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/allocation-by-province?limit=${limit}`
+    );
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+export const scatterVisual = async (field) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/scatter-visual?field=${field}`
+    );
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
