@@ -200,9 +200,7 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   <InfoOther>
                     <InfoOtherItem>Số tầng</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.floor !== "0 t"
-                        ? data?.floor.replace(" t", "")
-                        : "Không xác định"}
+                      {data?.floor}
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>

@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from pymongo import MongoClient
 import urllib.parse
+import math
 import sys
 import pickle
 import os
@@ -35,7 +36,7 @@ client = MongoClient(
     'mongodb://localhost:27017/')
 db = client['realEstate']  # Thay đổi tên database tùy theo mong muốn
 # Thay đổi tên collection tùy theo mong muốn
-collection = db['estateCollection']
+collection = db['estateCollection_v2']
 
 if sys.stdout.encoding != 'utf-8':
     sys.stdout = open(sys.stdout.fileno(), mode='w',
@@ -171,7 +172,7 @@ def get_allocation_by_project():
     province_counts = {}
     for item in data:
         province = item.get('project')
-        if province:
+        if province and isinstance(province, str) and province.strip().lower() not in ['nan', 'none', 'tin thường']:
             province_counts[province] = province_counts.get(province, 0) + 1
 
     result = {
@@ -233,7 +234,7 @@ def get_allocation_by_bathroom():
     province_counts = {}
     for item in data:
         province = item.get('bathroom')
-        if province:
+        if province and isinstance(province, str) and province.strip().lower() not in ['nan']:
             province_counts[province] = province_counts.get(province, 0) + 1
 
     result = {

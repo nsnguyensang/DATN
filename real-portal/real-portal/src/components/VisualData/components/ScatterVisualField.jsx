@@ -67,7 +67,7 @@ const ScatterVisualField = ({ feild }) => {
       {
         label: "Chung cư",
         data: dataVisual.map((item) => ({
-          x: item?.square || item?.width,
+          x: item?.square || item?.width || item?.floor || item?.bedroom,
           y: item.price,
         })),
         backgroundColor: "rgb(255, 99, 132)",

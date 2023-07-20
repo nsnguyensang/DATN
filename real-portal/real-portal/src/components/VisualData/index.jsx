@@ -17,7 +17,7 @@ import TopFloor from "./components/TopFloor";
 
 const VisualData = () => {
   const [topSelectProvinces, setTopSelectProvinces] = useState(10);
-  const [topSelectProject, setTopSelectProject] = useState(10);
+  const [topSelectProject, setTopSelectProject] = useState(5);
   const [topSelectBathroom, setTopSelectBathroom] = useState(10);
   const [topSelectBedroom, setTopSelectBedroom] = useState(10);
   const [topSelectFloor, setTopSelectFloor] = useState(10);
@@ -67,7 +67,7 @@ const VisualData = () => {
           <Select
             placeholder="Top Project"
             onChange={handleTopProjectChange}
-            defaultValue={10}
+            defaultValue={5}
             options={selectTopProject}
           />
           <TopProject top={topSelectProject} />
@@ -83,7 +83,7 @@ const VisualData = () => {
         </Col>
         {/* {plotImage && <img src={plotImage} alt="Plot" />} */}
       </Row>
-      <Row gutter={24}>
+      <Row gutter={24} style={{marginTop: "30px"}}>
         <Col span={8}>
           <Select
             placeholder="Top Bedroom"

@@ -23,10 +23,12 @@ ChartJS.register(
 const TopProject = ({ top }) => {
   const [labelProject, setLabelProject] = useState([]);
   const [valueProject, setValueProject] = useState([]);
+
   useEffect(() => {
     const fetchAllocationByProject = async () => {
       const result = await allocationByProject(top);
       console.log("resultProject", result);
+
       setLabelProject(result.labels);
       setValueProject(result.counts);
     };
