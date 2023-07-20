@@ -4,6 +4,7 @@ import { ReloadOutlined } from "@ant-design/icons";
 import CardSearch from "./components/CardSearch";
 import { predictHouseKNN, searchFilterResults } from "../../api/realEasteApi";
 import { useSearchParams } from "react-router-dom";
+import { modalSelect } from "./const/const";
 import {
   LayoutPredict,
   TitlePredict,
@@ -44,6 +45,7 @@ const Predict = () => {
   const [totalRecomment, setTotalRecomment] = useState();
   const [loadingRecomment, setLoadingRecomment] = useState(false);
   const [api, contextHolder] = notification.useNotification();
+  const [modalSelected, setModalSelected] = useState("knn");
   useEffect(() => {
     callAPI("https://provinces.open-api.vn/api/?depth=1");
   }, []);
@@ -185,12 +187,27 @@ const Predict = () => {
           .replace(/(Phường|Xã)\s*/, "")
       : "";
   };
+  const handleModalChange = (value) => {
+    setModalSelected(value);
+    console.log("modalSelect",modalSelected)
+  };
   return (
     <Fragment>
       {contextHolder}
       <Row gutter={24}>
         <Col span={8}>
           <TitlePredict>Dự đoán giá chung cư</TitlePredict>
+          <Select
+            placeholder="Modal dự đoán"
+            style={{
+              width: 200,
+              marginBottom: "10px",
+            }}
+            defaultValue={"knn"}
+            options={modalSelect}
+            onChange={handleModalChange}
+          />
+
           <PredictBox>
             <Form
               layout="vertical"
