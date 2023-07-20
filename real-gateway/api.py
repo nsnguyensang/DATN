@@ -136,7 +136,38 @@ def get_allocation_by_province():
     projection = {'_id': 0}
     data = list(collection.find(query, projection))
     limit = int(request.args.get('limit', 20))
-    # Xử lý dữ liệu và tính số lượng phân bổ theo trường "province"
+    province_counts = {}
+    for item in data:
+        province = item.get('province')
+        if province:
+            province_counts[province] = province_counts.get(province, 0) + 1
+
+    result = {
+        "labels": list(province_counts.keys()),
+        "counts": list(province_counts.values())
+    }
+    sorted_result = sorted(
+        zip(result["labels"], result["counts"]), key=lambda x: x[1], reverse=True)
+    # Chỉ lấy ra số lượng giá trị cần thiết
+    sorted_result = sorted_result[:limit]
+
+    sorted_labels = [item[0] for item in sorted_result]
+    sorted_counts = [item[1] for item in sorted_result]
+
+    sorted_result = {
+        "labels": sorted_labels,
+        "counts": sorted_counts
+    }
+
+    return jsonify(sorted_result)
+
+@app.route("/api/allocation-by-project", methods=["GET"])
+def get_allocation_by_project():
+    # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
+    query = {}
+    projection = {'_id': 0}
+    data = list(collection.find(query, projection))
+    limit = int(request.args.get('limit', 20))
     province_counts = {}
     for item in data:
         province = item.get('project')
@@ -150,7 +181,7 @@ def get_allocation_by_province():
     sorted_result = sorted(
         zip(result["labels"], result["counts"]), key=lambda x: x[1], reverse=True)
     # Chỉ lấy ra số lượng giá trị cần thiết
-    sorted_result = sorted_result[:60]
+    sorted_result = sorted_result[:limit]
 
     sorted_labels = [item[0] for item in sorted_result]
     sorted_counts = [item[1] for item in sorted_result]
@@ -161,8 +192,99 @@ def get_allocation_by_province():
     }
 
     return jsonify(sorted_result)
+@app.route("/api/allocation-by-bedroom", methods=["GET"])
+def get_allocation_by_bedroom():
+    # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
+    query = {}
+    projection = {'_id': 0}
+    data = list(collection.find(query, projection))
+    limit = int(request.args.get('limit', 20))
+    province_counts = {}
+    for item in data:
+        province = item.get('bedroom')
+        if province:
+            province_counts[province] = province_counts.get(province, 0) + 1
 
+    result = {
+        "labels": list(province_counts.keys()),
+        "counts": list(province_counts.values())
+    }
+    sorted_result = sorted(
+        zip(result["labels"], result["counts"]), key=lambda x: x[1], reverse=True)
+    # Chỉ lấy ra số lượng giá trị cần thiết
+    sorted_result = sorted_result[:limit]
 
+    sorted_labels = [item[0] for item in sorted_result]
+    sorted_counts = [item[1] for item in sorted_result]
+
+    sorted_result = {
+        "labels": sorted_labels,
+        "counts": sorted_counts
+    }
+
+    return jsonify(sorted_result)
+@app.route("/api/allocation-by-bathroom", methods=["GET"])
+def get_allocation_by_bathroom():
+    # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
+    query = {}
+    projection = {'_id': 0}
+    data = list(collection.find(query, projection))
+    limit = int(request.args.get('limit', 20))
+    province_counts = {}
+    for item in data:
+        province = item.get('bathroom')
+        if province:
+            province_counts[province] = province_counts.get(province, 0) + 1
+
+    result = {
+        "labels": list(province_counts.keys()),
+        "counts": list(province_counts.values())
+    }
+    sorted_result = sorted(
+        zip(result["labels"], result["counts"]), key=lambda x: x[1], reverse=True)
+    # Chỉ lấy ra số lượng giá trị cần thiết
+    sorted_result = sorted_result[:limit]
+
+    sorted_labels = [item[0] for item in sorted_result]
+    sorted_counts = [item[1] for item in sorted_result]
+
+    sorted_result = {
+        "labels": sorted_labels,
+        "counts": sorted_counts
+    }
+
+    return jsonify(sorted_result)
+@app.route("/api/allocation-by-floor", methods=["GET"])
+def get_allocation_by_floor():
+    # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
+    query = {}
+    projection = {'_id': 0}
+    data = list(collection.find(query, projection))
+    limit = int(request.args.get('limit', 20))
+    province_counts = {}
+    for item in data:
+        province = item.get('floor')
+        if province:
+            province_counts[province] = province_counts.get(province, 0) + 1
+
+    result = {
+        "labels": list(province_counts.keys()),
+        "counts": list(province_counts.values())
+    }
+    sorted_result = sorted(
+        zip(result["labels"], result["counts"]), key=lambda x: x[1], reverse=True)
+    # Chỉ lấy ra số lượng giá trị cần thiết
+    sorted_result = sorted_result[:limit]
+
+    sorted_labels = [item[0] for item in sorted_result]
+    sorted_counts = [item[1] for item in sorted_result]
+
+    sorted_result = {
+        "labels": sorted_labels,
+        "counts": sorted_counts
+    }
+
+    return jsonify(sorted_result)
 @app.route('/api/scatter-visual', methods=["GET"])
 def scatter_visual():
     # Lấy trường từ tham số truy vấn (params)

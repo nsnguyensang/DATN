@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { allocationByProvince } from "../../../api/realEasteApi";
+import { allocationByFloor } from "../../../api/realEasteApi";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,17 +20,17 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-const TopProvinces = ({ top }) => {
-  const [labelProvince, setLabelProvince] = useState([]);
-  const [valueProvince, setValueProvince] = useState([]);
+const TopFloor = ({ top }) => {
+  const [labelFloor, setLabelFloor] = useState([]);
+  const [valueFloor, setValueFloor] = useState([]);
   useEffect(() => {
-    const fetchAllocationByProvince = async () => {
-      const result = await allocationByProvince(top);
-      console.log("resultProvince", result);
-      setLabelProvince(result.labels);
-      setValueProvince(result.counts);
+    const fetchAllocationByFloor = async () => {
+      const result = await allocationByFloor(top);
+      console.log("resultFloor", result);
+      setLabelFloor(result.labels);
+      setValueFloor(result.counts);
     };
-    fetchAllocationByProvince();
+    fetchAllocationByFloor();
   }, [top]);
   const options = {
     responsive: true,
@@ -40,18 +40,18 @@ const TopProvinces = ({ top }) => {
       },
       title: {
         display: true,
-        text: "Top tỉnh thành có số lượng chung cư nhiều nhất",
+        text: "Top tầng có số lượng chung cư nhiều nhất",
       },
     },
   };
 
-  const labels = labelProvince;
+  const labels = labelFloor;
   const data = {
     labels: labels,
     datasets: [
       {
         label: "Số lượng chung cư",
-        data: valueProvince,
+        data: valueFloor,
         fill: false,
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         borderColor: "rgba(54, 162, 235, 1)",
@@ -66,4 +66,4 @@ const TopProvinces = ({ top }) => {
     </div>
   );
 };
-export default TopProvinces;
+export default TopFloor;

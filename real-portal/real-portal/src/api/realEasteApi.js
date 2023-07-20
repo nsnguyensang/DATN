@@ -45,6 +45,66 @@ export const allocationByProvince = async (limit) => {
   }
 };
 
+export const allocationByProject = async (limit) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/allocation-by-project?limit=${limit}`
+    );
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+export const allocationByBathroom = async (limit) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/allocation-by-bathroom?limit=${limit}`
+    );
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+export const allocationByBedroom = async (limit) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/allocation-by-bedroom?limit=${limit}`
+    );
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+export const allocationByFloor = async (limit) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/allocation-by-floor?limit=${limit}`
+    );
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 export const scatterVisual = async (field) => {
   try {
     const response = await axios.get(

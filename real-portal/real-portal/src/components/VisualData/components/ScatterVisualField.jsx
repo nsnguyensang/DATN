@@ -76,7 +76,7 @@ const ScatterVisualField = ({ feild }) => {
   };
 
   return (
-    <div style={{ width: "600px" }}>
+    <div style={{ width: "450px" , height:"200px"}}>
       <Scatter options={options} data={data} />
     </div>
   );
