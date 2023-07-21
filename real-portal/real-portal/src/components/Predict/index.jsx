@@ -2,7 +2,11 @@ import React, { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { ReloadOutlined } from "@ant-design/icons";
 import CardSearch from "./components/CardSearch";
-import { predictHouseKNN, searchFilterResults } from "../../api/realEasteApi";
+import {
+  predictHouseKNN,
+  predictHouseGBM,
+  searchFilterResults,
+} from "../../api/realEasteApi";
 import { useSearchParams } from "react-router-dom";
 import { modalSelect } from "./const/const";
 import {
@@ -59,7 +63,10 @@ const Predict = () => {
   const fetchPredictHouse = async (param) => {
     setLoading(true);
     try {
-      const results = await predictHouseKNN(param);
+      const results =
+        modalSelected === "knn"
+          ? await predictHouseKNN(param)
+          : await predictHouseGBM(param);
       setPricePredict(results.prediction);
       setTimeout(() => {
         setLoading(false);
@@ -189,7 +196,7 @@ const Predict = () => {
   };
   const handleModalChange = (value) => {
     setModalSelected(value);
-    console.log("modalSelect",modalSelected)
+    console.log("modalSelect", modalSelected);
   };
   return (
     <Fragment>
@@ -243,11 +250,24 @@ const Predict = () => {
                       },
                     ]}
                   >
-                    <InputNumber style={{ width: "160px" }} min={1} />
+                    <InputNumber style={{ width: "160px" }} min={0} />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={24}>
+                <Col span={12}>
+                  <Form.Item
+                    name="bathroom"
+                    label="Số phòng tắm"
+                    rules={[
+                      {
+                        required: true,
+                      },
+                    ]}
+                  >
+                    <InputNumber style={{ width: "160px" }} min={0} />
+                  </Form.Item>
+                </Col>
                 <Col span={12}>
                   <Form.Item
                     name="floor"
@@ -261,6 +281,8 @@ const Predict = () => {
                     <InputNumber style={{ width: "160px" }} min={1} />
                   </Form.Item>
                 </Col>
+              </Row>
+              <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
                     name="province"
@@ -292,8 +314,6 @@ const Predict = () => {
                     </Select>
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
                     name="district"
@@ -324,6 +344,8 @@ const Predict = () => {
                     </Select>
                   </Form.Item>
                 </Col>
+              </Row>
+              <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item
                     name="ward"

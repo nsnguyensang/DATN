@@ -17,7 +17,7 @@ export const searchFilterResults = async (param) => {
 };
 export const predictHouseKNN = async (param) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/predict`, param);
+    const response = await axios.post(`${BASE_URL}/api/predict/knn`, param);
     console.log("respone", response);
     if (response.status === 200) {
       return response.data;
@@ -28,7 +28,20 @@ export const predictHouseKNN = async (param) => {
     console.error("Error:", error);
   }
 };
-
+export const predictHouseGBM = async (param) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/api/predict/gbm`, param);
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 export const allocationByProvince = async (limit) => {
   try {
     const response = await axios.get(

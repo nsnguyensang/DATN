@@ -18,6 +18,8 @@ from typing import Dict, Any
 
 # Load mô hình từ file
 
+with open('C:/Workspace/DATN/data-modeling/ver3/gbm_model_ver3.pkl', 'rb') as file:
+    gbm2 = pickle.load(file)
 with open('C:/Workspace/DATN/data-modeling/ver3/knn_model_ver3.pkl', 'rb') as file:
     knn3 = pickle.load(file)
 # Define the directory path where the files are saved
@@ -45,6 +47,40 @@ if sys.stdout.encoding != 'utf-8':
     sys.stdout = open(sys.stdout.fileno(), mode='w',
                       encoding='utf-8', buffering=1)
 
+
+
+@app.route('/api/predict/gbm', methods=['POST'])
+def predict_gbm():
+    # Get the input data from the request
+    input_data = request.get_json()
+
+    # Create a sample DataFrame from the input_data dictionary
+    sample_transformed = pd.DataFrame()
+    for c in cols:
+        if c in input_data:
+            # Check if the input data contains new values that were not in the training data
+            new_values = list(set(input_data[c]) - set(lbl[c].classes_))
+            if new_values:
+                # Add the new values to the LabelEncoder classes and transform the input data
+                lbl[c].classes_ = np.concatenate((lbl[c].classes_, new_values))
+            sample_transformed[c] = lbl[c].transform(input_data[c])
+
+    cols_num = ['square', 'floor', 'bathroom', 'bedroom']
+    for c in cols_num:
+        sample_transformed[c] = float(input_data[c])
+    column_order = ['square', 'floor', 'bathroom', 'bedroom', 'district', 'province', 'ward']
+    sample_transformed = sample_transformed.reindex(columns=column_order)
+
+    # Make the prediction using the loaded model
+    y_pred = gbm2.predict(sample_transformed[0:1], num_iteration=gbm2.best_iteration_)
+
+    # Return the prediction as a response
+    prediction_value = y_pred[0]
+    response = {
+        "prediction": prediction_value
+    }
+
+    return jsonify(response)
 # api dự đoán giá modal KNN
 
 
