@@ -17,7 +17,7 @@ class remove_duplicate:
         self.feature_extractor: TfidfVectorizer = None
 
     def get_data_to_train(self):
-        path_data = 'C:/Workspace/DATN/schema-matching/output/final.csv'
+        path_data = 'C:/Workspace/DATN/schema-matching/output/final_2000_test.csv'
         df = pd.read_csv(path_data, encoding='utf-8', low_memory=False)
         df = df.drop(["Unnamed: 0"], axis=1)
         df = df.fillna('None')
@@ -77,7 +77,7 @@ class remove_duplicate:
 
     # def get_old_data(self, ward, district, province, type, min_time, max_time):
     def get_old_data(self, ward, district, province, type, min_time, max_time):
-        path_data = 'C:/Workspace/DATN/schema-matching/output/final.csv'
+        path_data = 'C:/Workspace/DATN/schema-matching/output/final_2000_test.csv'
         df = pd.read_csv(path_data, encoding='utf-8', low_memory=False)
         df = df.drop(["Unnamed: 0"], axis=1)
         df["date_second"] = df["date"].map(lambda x: (datetime.strptime(
@@ -95,6 +95,11 @@ class remove_duplicate:
             old_size = len(old_df)
             new_size = len(new_df)
             df = pd.concat([old_df, new_df], ignore_index=True)
+            df = df.drop(df[df['description'] == "None"].index)
+            # if (len(df[df['description'] != df['description']])) > 0:
+            #     from tabulate import tabulate
+            #     print("df:\n", tabulate(df, headers='keys', tablefmt='psql'))
+            df = df.dropna(subset=df.select_dtypes(float).columns, how='all')
             X_vectors = self.feature_extractor.transform(df["description"])
             similarity_scores = cosine_similarity(X_vectors)
             drop_set = set()
@@ -112,33 +117,40 @@ class remove_duplicate:
             df = new_df.iloc[keep]
             return df
         except Exception as ex:
+            from tabulate import tabulate
+
+            # print("old:\n", tabulate(old_df, headers='keys', tablefmt='psql'))
+            # print("new:\n", tabulate(new_df, headers='keys', tablefmt='psql'))
+            # print("df:\n", tabulate(df, headers='keys', tablefmt='psql'))
+            # raise Exception("abx")
+            print(tabulate(df, headers='keys', tablefmt='psql'))
             print("Exception occurs in remove_outside", ex)
 
     # ward, district, province, type):
     def remove_subset(self, new_df: pd.DataFrame, ward, district, province, type):
-        try:
-            new_df = new_df.drop_duplicates()
-            new_df.reset_index(inplace=True)
-            new_df["date"].fillna('01/01/2021', inplace=True)
-            if len(new_df) > 1:
-                new_df = self.remove_inside(new_df)
-            # min_time = np.min(new_df["date"])
-            # max_time = np.max(new_df["date"])
-            min_time = (datetime.strptime(str(np.min(new_df["date"])), '%d/%m/%Y').date(
-            )-datetime.strptime(str('01/01/1970'), '%d/%m/%Y').date()).days*24*60*60
-            max_time = (datetime.strptime(str(np.max(new_df["date"])), '%d/%m/%Y').date(
-            )-datetime.strptime(str('01/01/1970'), '%d/%m/%Y').date()).days*24*60*60
-            min_time -= self.max_time_diff
-            max_time += self.max_time_diff
-            old_df = self.get_old_data(
-                ward, district, province, type, min_time, max_time)
-            # old_df = self.get_old_data(
-            #     address, min_time, max_time)
-            if old_df is not None:
-                new_df = self.remove_outside(old_df, new_df)
-            return new_df
-        except Exception as ex:
-            print("Exception occurs in remove_subset", ex)
+        # try:
+        new_df = new_df.drop_duplicates()
+        new_df.reset_index(inplace=True)
+        new_df["date"].fillna('01/01/2021', inplace=True)
+        if len(new_df) > 1:
+            new_df = self.remove_inside(new_df)
+        # min_time = np.min(new_df["date"])
+        # max_time = np.max(new_df["date"])
+        min_time = (datetime.strptime(str(np.min(new_df["date"])), '%d/%m/%Y').date(
+        )-datetime.strptime(str('01/01/1970'), '%d/%m/%Y').date()).days*24*60*60
+        max_time = (datetime.strptime(str(np.max(new_df["date"])), '%d/%m/%Y').date(
+        )-datetime.strptime(str('01/01/1970'), '%d/%m/%Y').date()).days*24*60*60
+        min_time -= self.max_time_diff
+        max_time += self.max_time_diff
+        old_df = self.get_old_data(
+            ward, district, province, type, min_time, max_time)
+        # old_df = self.get_old_data(
+        #     address, min_time, max_time)
+        if old_df is not None:
+            new_df = self.remove_outside(old_df, new_df)
+        return new_df
+        # except Exception as ex:
+        #     print("Exception occurs in remove_subset", ex)
 
     def remove_duplicate(self, df: pd.DataFrame):
         df = df.drop(df[df['square'] == 0].index)

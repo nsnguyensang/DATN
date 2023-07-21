@@ -3,6 +3,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 import urllib.parse
 import math
+import numpy as np
 import sys
 import pickle
 import os
@@ -10,21 +11,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import norm
-
+import joblib
 import json
 from typing import Dict, Any
 
-# Load the model
-with open('C:/Workspace/DATN/data-modeling/knn_model2.pkl', 'rb') as file:
-    knn2 = pickle.load(file)
+
+# Load mô hình từ file
+
+with open('C:/Workspace/DATN/data-modeling/ver3/knn_model_ver3.pkl', 'rb') as file:
+    knn3 = pickle.load(file)
 # Define the directory path where the files are saved
-save_dir = 'C:/Workspace/DATN/data-modeling/'
+save_dir = 'C:/Workspace/DATN/data-modeling/ver3/'
 
 # Load the LabelEncoder objects from files
 lbl = {}
 cols = ['district', 'province', 'ward']
 for c in cols:
-    with open(os.path.join(save_dir, f'{c}_label_encoder2.pkl'), 'rb') as file:
+    with open(os.path.join(save_dir, f'{c}_label_encoder_ver3.pkl'), 'rb') as file:
         lbl[c] = pickle.load(file)
 
 app = Flask(__name__)
@@ -45,26 +48,30 @@ if sys.stdout.encoding != 'utf-8':
 # api dự đoán giá modal KNN
 
 
-@app.route('/api/predict', methods=['POST'])
-def predict():
+@app.route('/api/predict/knn', methods=['POST'])
+def predict_knn():
     # Get the input data from the request
     input_data = request.get_json()
 
-    # Transform the input data using the loaded LabelEncoder objects
+    # Create a sample DataFrame from the input_data dictionary
     sample_transformed = pd.DataFrame()
     for c in cols:
-        sample_transformed[c] = lbl[c].transform(input_data[c])
+        if c in input_data:
+            # Check if the input data contains new values that were not in the training data
+            new_values = list(set(input_data[c]) - set(lbl[c].classes_))
+            if new_values:
+                # Add the new values to the LabelEncoder classes and transform the input data
+                lbl[c].classes_ = np.concatenate((lbl[c].classes_, new_values))
+            sample_transformed[c] = lbl[c].transform(input_data[c])
 
-    cols_num = ['square', 'floor', 'bedroom']
+    cols_num = ['square', 'floor', 'bathroom', 'bedroom']
     for c in cols_num:
         sample_transformed[c] = float(input_data[c])
-
-    column_order = ['square', 'floor', 'bedroom',
-                    'district', 'province', 'ward']
+    column_order = ['square', 'floor', 'bathroom','bedroom', 'district', 'province', 'ward']
     sample_transformed = sample_transformed.reindex(columns=column_order)
 
     # Make the prediction using the loaded model
-    y_pred = knn2.predict(sample_transformed[0:1])
+    y_pred = knn3.predict(sample_transformed[0:1])
 
     # Return the prediction as a response
     prediction_value = y_pred[0][0]
@@ -73,6 +80,8 @@ def predict():
     }
 
     return jsonify(response)
+
+
 # API gọi dữ liệu phân trang
 
 

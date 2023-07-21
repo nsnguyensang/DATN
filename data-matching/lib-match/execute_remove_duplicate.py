@@ -5,7 +5,7 @@ import pandas as pd
 remover: remove_duplicate = load("C:/Workspace/DATN/RemoveDuplicate.lib")
 
 
-path_data = 'C:/Workspace/DATN/schema-matching/output/final.csv'
+path_data = 'C:/Workspace/DATN/schema-matching/output/final_2000_test.csv'
 df = pd.read_csv(path_data, encoding='utf-8', low_memory=False)
 df = df.drop(["Unnamed: 0"], axis=1)
 # Optional

@@ -53,7 +53,7 @@ class BatdongsanSpider(scrapy.Spider):
             '.property > .moreinfor1 > .infor > table > tr:nth-child(5) > td:nth-child(4)::text').extract_first()
         item['bedroom'] = response.css(
             '.property > .moreinfor1 > .infor > table > tr:nth-child(6) > td:nth-child(4)::text').extract_first()
-        item['link_image'] = response.css('.property > .images > .imageview > img::attr(src) ').extract_first()
+        item['link_image'] = response.css('.property > .images > .imageview > img::attr(src) ').extract()
         item['name_contact'] = response.css(
             '.property > .contact > .contact-info > .content > .name::text').extract_first()
         item['phone_contact'] = response.css(

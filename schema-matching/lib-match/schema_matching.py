@@ -23,7 +23,7 @@ class SchemaMatching:
         self.min_thres = min_thres
 
     def get_train_data(self):
-        PATH_BAT_DONG_SAN_123 = "C:/Workspace/DATN/data-standard/batdongsan123.csv"
+        PATH_BAT_DONG_SAN_123 = "C:/Workspace/DATN/data-standard/data_17_7/batdongsan123.csv"
         batdongsan123 = pd.read_csv(PATH_BAT_DONG_SAN_123, encoding = 'utf-8')
         return batdongsan123
 

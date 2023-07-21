@@ -29,7 +29,7 @@ class BatdongsanSpider(scrapy.Spider):
         item = CrawlBatdongsan123()
         item['title'] = response.css('.page-h1::text').extract_first()
         item['description'] = response.css('.leftCol > .post-section > div > p::text').extract()
-        item['link_image'] = response.css('.leftCol > .post-images > img::attr(data-src)').extract_first()
+        item['link_image'] = response.css('.leftCol > .post-images > img::attr(data-src)').extract()
         item['url_page'] = response.request.url
         item['price'] = response.css('.clearfix .margin-bottom-15 > .post-features > .post-price::text').extract() + response.css('.clearfix .margin-bottom-15 > .post-features > .post-price > i::text').extract()
         item['bedroom'] = response.css('.clearfix .margin-bottom-15 > .post-features > .post-bedroom::text').extract()

@@ -5,11 +5,11 @@ from ..items import CrawlBatdongsansoItem
 class BatdongsanSpider(scrapy.Spider):
     i=1
     name = "bdsso"
-    base_url="https://batdongsan.so/nha-dat-cho-thue/can-ho-chung-cu?page="
+    base_url="https://batdongsan.so/nha-dat-ban/can-ho-chung-cu?page="
 
     def start_requests(self):
         start_urls=[
-            "https://batdongsan.so/nha-dat-cho-thue/can-ho-chung-cu?page=1#/"
+            "https://batdongsan.so/nha-dat-ban/can-ho-chung-cu?page=1#/"
         ]
         for url in start_urls:
             yield scrapy.Request(url=url, callback=self.parse)
@@ -20,7 +20,7 @@ class BatdongsanSpider(scrapy.Spider):
             link_detail = product.css('a::attr(href)').extract_first()
             yield response.follow(link_detail, self.parse_detail)
 
-        if self.i < 1000:
+        if self.i < 1821:
             self.i += 1
             path_next = self.base_url + str(self.i)+"#/"
             yield response.follow(path_next, callback=self.parse)
@@ -38,7 +38,7 @@ class BatdongsanSpider(scrapy.Spider):
         item['content'] = response.css('.re > .re-block > .re-content > p *::text').extract()
         item['date'] = response.css('.re > .re-block > .row:last-child ul > li > .sp3::text').extract_first()
         item['code'] = response.css('.re > .re-block > .row:last-child ul > li:last-child > .sp3::text').extract_first()
-        item['link_image'] = response.css('.re > .re-tab > .tab-content > #re-gallery > .re-gallery > .re-images .item > a > img::attr(src)').extract_first()
+        item['link_image'] = response.css('.re > .re-tab > .tab-content > #re-gallery > .re-gallery > .re-images .item > a > img::attr(src)').extract()
         item['name_contact'] = response.css('.re > .re-block > .re-contact-info > .info > a::text').extract_first()
         item['phone_contact'] = response.css('.re > .re-block > .re-contact-info > .info > div > home-post-phone::attr(phone)').extract_first()
         item['url_page'] = response.request.url

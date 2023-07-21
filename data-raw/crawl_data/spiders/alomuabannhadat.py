@@ -33,7 +33,7 @@ class AlomuabannhadatSpider(scrapy.Spider):
             link_detail = product.css('a::attr(href)').extract_first()
             yield response.follow(link_detail, self.parse_detail)
 
-        if self.i < 120:
+        if self.i < 121:
             self.i += 1
             path_next = self.base_url + str(self.i) + "/"
             yield response.follow(path_next, callback=self.parse)
@@ -132,7 +132,7 @@ class AlomuabannhadatSpider(scrapy.Spider):
         images = response.css(
             'section#property-gallery div.owl_dots>div.owl_dot').xpath('@style').getall()
         
-        # print(images)
+        print("test_image",images)
         breadcrumb = response.css('ol.breadcrumb>li>a>span::text').getall()
         province = breadcrumb[3].replace(breadcrumb[2], '').strip()
         item_loader.add_value('province', province) 

@@ -7,18 +7,18 @@ matcher : SchemaMatching = load("C:/Workspace/DATN/SchemaMatching.lib")
 
 
 
-PATH_BDSS = "C:/Workspace/DATN/data-standard/batdongsanso.csv"
+PATH_BDSS = "C:/Workspace/DATN/data-standard/data_17_7/batdongsanso.csv"
 bdss = pd.read_csv(PATH_BDSS, encoding = 'utf-8')
 df1 = bdss
 # df1["address"]  = nha24["district"] + nha24["province"] + nha24["street"] + nha24["ward"]
 
-PATH_ALO = "C:/Workspace/DATN/data-standard/alomuabannhadat.csv"
+PATH_ALO = "C:/Workspace/DATN/data-standard/data_17_7/alomuabannhadat.csv"
 alo = pd.read_csv(PATH_ALO, encoding = 'utf-8') 
 df2 = alo 
 # df2["address"]  = alo["district"] + alo["province"] + alo["street"] + alo["ward"]
 
 
-PATH_I = "C:/Workspace/DATN/data-standard/ibatdongsan.csv"
+PATH_I = "C:/Workspace/DATN/data-standard/data_17_7/ibatdongsan.csv"
 ibat = pd.read_csv(PATH_I, encoding = 'utf-8')
 df3 = ibat 
 # df3["address"]  = ibat["district"] + ibat["province"] + ibat["street"] + ibat["ward"]
