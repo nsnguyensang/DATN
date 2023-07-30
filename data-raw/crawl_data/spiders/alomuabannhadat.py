@@ -1,15 +1,17 @@
 import scrapy
 from scrapy.selector import Selector
-from scrapy.loader import ItemLoader   
+from scrapy.loader import ItemLoader
 from itemloaders.processors import TakeFirst
 from ..items import CrawlAlomuabannhadatItem
 
+
 class AlomuabannhadatSpider(scrapy.Spider):
-    i=1
+    i = 1
     name = "alomuabannhadat_vn"
-    base_url="https://alomuabannhadat.vn/nha-ban/ban-can-ho-chung-cu/page-"
+    base_url = "https://alomuabannhadat.vn/nha-ban/ban-can-ho-chung-cu/page-"
+
     def start_requests(self):
-        start_urls=[
+        start_urls = [
             "https://alomuabannhadat.vn/nha-ban/ban-can-ho-chung-cu/page-1/"
         ]
         headers = {
@@ -26,7 +28,8 @@ class AlomuabannhadatSpider(scrapy.Spider):
             'Accept-Language': 'en-US,en;q=0.9',
         }
         for url in start_urls:
-            yield scrapy.Request(url=url, callback=self.parse)
+            yield scrapy.Request(url=url, callback=self.parse, headers=headers)
+
     def parse(self, response):
         products = response.css('.property ')
         for product in products:
@@ -37,12 +40,13 @@ class AlomuabannhadatSpider(scrapy.Spider):
             self.i += 1
             path_next = self.base_url + str(self.i) + "/"
             yield response.follow(path_next, callback=self.parse)
+
     def parse_detail(self, response):
         item_loader = ItemLoader(
             item=CrawlAlomuabannhadatItem(), response=response)
         item_loader.default_output_processor = TakeFirst()
         title = response.css("h1::text").get()
-    
+
         item_loader.add_value('title', title.strip())
 
         # address = response.css("div.address>span.value::text").get()
@@ -51,11 +55,11 @@ class AlomuabannhadatSpider(scrapy.Spider):
 
         price = response.css(
             "#property-detail>.property-title>figure> span > b::text").getall()[0]
-       
+
         item_loader.add_value('price', price.strip())
         prarams = response.css('section#quick-summary>dl>dt').getall()
         values = response.css('section#quick-summary>dl>dd').getall()
- 
+
         for i in range(len(prarams)):
             item = prarams[i]
             item = item.replace('<dt>', '')
@@ -65,14 +69,15 @@ class AlomuabannhadatSpider(scrapy.Spider):
                 code = value.strip()
                 item_loader.add_value('code', code)
             if (item == 'Vị trí:'):
-                address  = value.strip()
+                address = value.strip()
                 item_loader.add_value('address', address)
 
             if (item == 'Pháp lý:'):
                 juridical = value.strip()
                 item_loader.add_value('juridical', juridical)
             if (item == 'Thuộc dự án:'):
-                project = response.css('section#quick-summary>dl>dd>a::text').get()
+                project = response.css(
+                    'section#quick-summary>dl>dd>a::text').get()
                 item_loader.add_value('project', project.strip())
             if (item == 'Liên hệ:'):
                 name_contact = value.strip()
@@ -83,7 +88,7 @@ class AlomuabannhadatSpider(scrapy.Spider):
             if (item == 'Mobile:'):
                 phone_contact = value.split("')")[0].split("this,'")[1].strip()
                 item_loader.add_value('phone_contact', phone_contact)
-                
+
         params = response.css('section#property-features>ul>li::text').getall()
 
         for item in params:
@@ -110,7 +115,7 @@ class AlomuabannhadatSpider(scrapy.Spider):
                 item_loader.add_value('pool', pool)
             if (item.find('Chiều ngang:') >= 0):
                 width = item.replace('Chiều ngang:', '').strip()
-                item_loader.add_value('width', width)   
+                item_loader.add_value('width', width)
             if (item.find('Chiều dài:') >= 0):
                 length = item.replace('Chiều dài:', '').strip()
                 item_loader.add_value('length', length)
@@ -128,17 +133,17 @@ class AlomuabannhadatSpider(scrapy.Spider):
                 item_loader.add_value('toilet', toilet)
         email = response.css(
             'section.agent-form div.info>figure>a').xpath('@title').get()
-        item_loader.add_value('email', email)     
+        item_loader.add_value('email', email)
         images = response.css(
             'section#property-gallery div.owl_dots>div.owl_dot').xpath('@style').getall()
-        
-        print("test_image",images)
+
+        print("test_image", images)
         breadcrumb = response.css('ol.breadcrumb>li>a>span::text').getall()
         province = breadcrumb[3].replace(breadcrumb[2], '').strip()
-        item_loader.add_value('province', province) 
+        item_loader.add_value('province', province)
         district = breadcrumb[4].strip()
         item_loader.add_value('district', district)
-        ward =  breadcrumb[5].strip()
+        ward = breadcrumb[5].strip()
         item_loader.add_value('ward', ward)
         description = response.css('section#description>p::text').getall()
         item_loader.add_value('brief', ' '.join(description))
@@ -154,7 +159,7 @@ class AlomuabannhadatSpider(scrapy.Spider):
                     'background-image: url("', '').replace('")')
                 image.append(tmp)
             item_loader.add_value('link_image', image)
-             
+
         item_loader.add_value('url_page', response.request.url)
-        
+
         return item_loader.load_item()

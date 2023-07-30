@@ -44,7 +44,7 @@ export const RecommentBox = styled.div`
   border-radius: 0 4px 4px 4px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   // width: 800px;
-  height: 1080px;
+  height: 1110px;
   padding: 20px;
   padding-left: 40px;
   padding-right: 0px;
@@ -64,4 +64,13 @@ export const ButtomView = styled(Button)`
     background: #1dbabf !important;
     border: 1px solid #1dbabf !important;
   }
+`;
+export const TitleCountReal = styled.span`
+  font-family: "Roboto Regular", Roboto, Arial !important;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: normal !important;
+  color: #2c2c2c;
+  display: inline-block;
+  margin-bottom: 10px;
 `;

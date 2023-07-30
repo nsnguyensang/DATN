@@ -16,6 +16,7 @@ import {
   ButtomView,
   ResultBox,
   RecommentBox,
+  TitleCountReal,
 } from "./styles";
 import {
   Button,
@@ -26,8 +27,9 @@ import {
   Row,
   Col,
   Spin,
+  Pagination,
   notification,
-  Space,
+  Empty,
 } from "antd";
 import CardRecomment from "./components/CardSearch";
 const { Option } = Select;
@@ -46,10 +48,13 @@ const Predict = () => {
   const [square, setSquare] = useState();
   const [loading, setLoading] = useState(false);
   const [dataRecomment, setDataRecomment] = useState([]);
-  const [totalRecomment, setTotalRecomment] = useState();
+  const [totalRecomment, setTotalRecomment] = useState(0);
   const [loadingRecomment, setLoadingRecomment] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   const [modalSelected, setModalSelected] = useState("knn");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [logParam, setLogParam] = useState({});
+  const pageSize = 9;
   useEffect(() => {
     callAPI("https://provinces.open-api.vn/api/?depth=1");
   }, []);
@@ -59,6 +64,28 @@ const Predict = () => {
       description:
         "Bộ dữ liệu dùng đào tạo mô hình chưa có thông tin tại vị trí đó. Bạn có thể chọn vị trí khác để xem giá. ",
     });
+  };
+  const recomentSearch = async (param) => {
+    setLoading(false);
+    const paramSearch = {
+      min_price: parseFloat(pricePredict) - 300000000,
+      max_price: parseFloat(pricePredict) + 300000000,
+      min_square: param.square - 15,
+      max_square: param.square + 15,
+      district: param.district[0],
+      province: param.province[0],
+      page: currentPage,
+      limit: pageSize,
+    };
+    const fetchSearch = async () => {
+      setLoadingRecomment(true);
+      const dataSearch = await searchFilterResults(paramSearch);
+      setDataRecomment(dataSearch.data);
+    };
+    fetchSearch();
+    setTimeout(() => {
+      setLoadingRecomment(false);
+    }, 500);
   };
   const fetchPredictHouse = async (param) => {
     setLoading(true);
@@ -78,14 +105,14 @@ const Predict = () => {
           district: param.district[0],
           province: param.province[0],
           // ward: param.ward[0],
-          page: "1",
-          limit: "9",
+          page: currentPage,
+          limit: pageSize,
         };
         console.log("paramRecomment", paramSearch);
         const fetchSearch = async () => {
           setLoadingRecomment(true);
           const dataSearch = await searchFilterResults(paramSearch);
-          setTotalRecomment(dataRecomment.total);
+          setTotalRecomment(dataSearch.total);
           setDataRecomment(dataSearch.data);
         };
         fetchSearch();
@@ -142,7 +169,6 @@ const Predict = () => {
       );
     }
   };
-
   const handleWardChange = (value, option) => {
     if (value !== undefined) {
       setSelectedWard(option.children);
@@ -169,6 +195,7 @@ const Predict = () => {
       }
       setSquare(values.square);
       setSearchParams({ ...values, ...result });
+      setLogParam({ ...values, ...result });
       try {
         fetchPredictHouse({ ...values, ...result });
       } catch (e) {}
@@ -193,6 +220,10 @@ const Predict = () => {
           .replace(/(Quận|Huyện)\s*/, "")
           .replace(/(Phường|Xã)\s*/, "")
       : "";
+  };
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    recomentSearch(logParam);
   };
   const handleModalChange = (value) => {
     setModalSelected(value);
@@ -429,10 +460,43 @@ const Predict = () => {
         <Col span={16}>
           <TitlePredict>Bạn có thể quan tâm</TitlePredict>
           <RecommentBox>
+            {totalRecomment !== 0 && pricePredict !== "" && (
+              <Pagination
+                style={{ marginBottom: "12px" }}
+                current={currentPage}
+                total={totalRecomment}
+                pageSize={pageSize}
+                onChange={handlePageChange}
+                showSizeChanger={false}
+                showTotal={() => (
+                  <TitleCountReal>
+                    Đang xem{" "}
+                    {currentPage * pageSize < totalRecomment
+                      ? currentPage * pageSize
+                      : totalRecomment}
+                    /{totalRecomment} căn hộ phù hợp
+                  </TitleCountReal>
+                )} // Hiển thị tổng số bản ghi
+              />
+            )}
             {pricePredict !== "" &&
               !loading &&
               !!!loadingRecomment &&
+              totalRecomment !== 0 &&
               dataRecomment.map((itm, index) => <CardSearch data={itm} />)}
+            {pricePredict === "" && (
+              <div style={{ marginTop: "150px" }}>
+                <Empty description={"Dự đoán để gợi ý căn hộ phù hợp"} />
+              </div>
+            )}
+            {totalRecomment === 0 && pricePredict !== "" && !!!loadingRecomment && (
+              <div style={{ marginTop: "150px" }}>
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={"Không thấy căn hộ nào trong bộ dữ liệu"}
+                />
+              </div>
+            )}
             {loadingRecomment && (
               <div
                 style={{
