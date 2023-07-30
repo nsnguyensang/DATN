@@ -39,7 +39,7 @@ const ScatterVisualField = ({ feild }) => {
           text: "Giá",
         },
         beginAtZero: true,
-        max: 30000,
+        // max: 30000,
         min: 0,
       },
       x: {
@@ -70,13 +70,13 @@ const ScatterVisualField = ({ feild }) => {
           x: item?.square || item?.width || item?.floor || item?.bedroom,
           y: item.price,
         })),
-        backgroundColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(54, 162, 235, 1)",
       },
     ],
   };
 
   return (
-    <div style={{ width: "450px" , height:"200px"}}>
+    <div style={{ width: "950px"}}>
       <Scatter options={options} data={data} />
     </div>
   );

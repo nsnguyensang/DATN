@@ -416,23 +416,26 @@ def scatter_visual():
     # Lấy trường từ tham số truy vấn (params)
     field = request.args.get('field')
 
-    # Trường "price" luôn được thêm vào danh sách để so sánh
-    fields: Dict[str, Any] = {'price': 1, field: 1}
+    # Sử dụng aggregation framework của MongoDB để tối ưu truy vấn
+    pipeline = [
+        {
+            '$match': {
+                'price': {'$lt': 2e10, '$gt': 50000000},
+                field: {'$lt': 300, '$gt': 0}
+            }
+        }
+    ]
 
-    # Truy vấn dữ liệu từ MongoDB
-    data = collection.find({'price': {'$lt':  2e10, '$gt': 50000000}, field: {
-                           '$lt': 300, '$gt': 0}}, {'_id': 0, **fields})
+    # Thực hiện aggregation và lấy kết quả
+    data = collection.aggregate(pipeline)
 
-    # Chuẩn bị dữ liệu để trả về
+    # Chuyển đổi kết quả thành danh sách để trả về
     scatter_data = []
     for doc in data:
-        scatter_entry = {}
-        for key, value in fields.items():
-            if key == 'price':
-                scatter_entry[key] = doc[key] / 1000000
-            else:
-                scatter_entry[key] = doc[key]
-
+        scatter_entry = {
+            'price': doc['price'] / 1000000,  # Chia cho 1 triệu để đổi đơn vị
+            field: doc[field]
+        }
         scatter_data.append(scatter_entry)
 
     return jsonify(scatter_data)

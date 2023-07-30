@@ -171,8 +171,8 @@ const VisualData = ({ backgroundColor }) => {
           </BoxElement>
         </Col>
       </Row>
-      <BoxElement width="1600px" height ="900px" style={{marginTop: "20px"}}>
-      <TitleVisual>Top các trường có số lượng lớn nhất</TitleVisual>
+      <BoxElement width="1600px" height="900px" style={{ marginTop: "20px" }}>
+        <TitleVisual>Top các trường có số lượng lớn nhất</TitleVisual>
         <Row gutter={24}>
           <Col span={12}>
             <Select
@@ -209,12 +209,12 @@ const VisualData = ({ backgroundColor }) => {
               options={selectScatterFeild}
             />
           </Col> */}
-            {/* <ScatterVisualField feild={selectFieldVsPrice} /> */}
+          {/* <ScatterVisualField feild={selectFieldVsPrice} /> */}
           {/* {plotImage && <img src={plotImage} alt="Plot" />} */}
         </Row>
         <Row gutter={24} style={{ marginTop: "30px" }}>
           <Col span={12}>
-          <Select
+            <Select
               placeholder="Top Bedroom"
               onChange={handleTopBedroomChange}
               defaultValue={10}
@@ -223,7 +223,7 @@ const VisualData = ({ backgroundColor }) => {
             <TopBedroom top={topSelectBedroom} />
           </Col>
           <Col span={12}>
-          <Select
+            <Select
               placeholder="Top Bathroom"
               onChange={handleTopBathroomChange}
               defaultValue={10}
@@ -233,6 +233,21 @@ const VisualData = ({ backgroundColor }) => {
           </Col>
         </Row>
       </BoxElement>
+      <Row gutter={24}>
+        <BoxElement
+          width="1900px"
+          height="600px"
+          style={{ marginLeft: "280px", marginTop: "26px" }}
+        >
+          <TitleVisual>Mức giá với các thuộc tính còn lại</TitleVisual>
+          <Select
+            onChange={handleScatterFiledPrice}
+            defaultValue={"square"}
+            options={selectScatterFeild}
+          />
+          <ScatterVisualField feild={selectFieldVsPrice} />
+        </BoxElement>
+      </Row>
     </div>
   );
 };
