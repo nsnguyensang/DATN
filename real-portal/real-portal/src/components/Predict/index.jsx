@@ -34,7 +34,7 @@ import {
 import CardRecomment from "./components/CardSearch";
 const { Option } = Select;
 
-const Predict = () => {
+const Predict = ({ background }) => {
   const [form] = Form.useForm();
   const [searchParams, setSearchParams] = useSearchParams();
   //api tỉnh thành, quận huyện
@@ -230,7 +230,14 @@ const Predict = () => {
     console.log("modalSelect", modalSelected);
   };
   return (
-    <Fragment>
+    <div
+      style={{
+        margin: "16px 16px",
+        padding: 24,
+        minHeight: 700,
+        background: background,
+      }}
+    >
       {contextHolder}
       <Row gutter={24}>
         <Col span={8}>
@@ -489,14 +496,16 @@ const Predict = () => {
                 <Empty description={"Dự đoán để gợi ý căn hộ phù hợp"} />
               </div>
             )}
-            {totalRecomment === 0 && pricePredict !== "" && !!!loadingRecomment && (
-              <div style={{ marginTop: "150px" }}>
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description={"Không thấy căn hộ nào trong bộ dữ liệu"}
-                />
-              </div>
-            )}
+            {totalRecomment === 0 &&
+              pricePredict !== "" &&
+              !!!loadingRecomment && (
+                <div style={{ marginTop: "150px" }}>
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description={"Không thấy căn hộ nào trong bộ dữ liệu"}
+                  />
+                </div>
+              )}
             {loadingRecomment && (
               <div
                 style={{
@@ -512,7 +521,7 @@ const Predict = () => {
           </RecommentBox>
         </Col>
       </Row>
-    </Fragment>
+    </div>
   );
 };
 

@@ -14,17 +14,20 @@ const App = () => {
       <LayoutGlobal />
       <Layout>
         <Content
-          style={{
-            margin: "16px 16px",
-            padding: 24,
-            minHeight: 700,
-            background: colorBgContainer,
-          }}
+        // style={{
+        //   margin: "16px 16px",
+        //   padding: 24,
+        //   minHeight: 700,
+        //   background: colorBgContainer,
+        // }}
         >
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home background={colorBgContainer} />} />
             <Route path="/visual" element={<VisualData />} />
-            <Route path="/predict" element={<Predict />} />
+            <Route
+              path="/predict"
+              element={<Predict background={colorBgContainer} />}
+            />
           </Routes>
         </Content>
         <Footer

@@ -6,7 +6,7 @@ import SearchAndFilter from "./components/SearchAndFilter";
 import { Spin, Pagination } from "antd";
 import CardRealEaste from "./components/CardRealEaste";
 import DetailRealEaste from "./components/DetailRealEaste";
-const Home = () => {
+const Home = ({ background }) => {
   const location = useLocation();
   const [total, setTotal] = useState();
   const [data, setData] = useState([]);
@@ -86,7 +86,14 @@ const Home = () => {
   };
 
   return (
-    <Fragment>
+    <div
+      style={{
+        margin: "16px 16px",
+        padding: 24,
+        minHeight: 700,
+        background: background,
+      }}
+    >
       <SearchAndFilter />
       <LayoutCenter>
         <TitlePage>Tìm kiếm chung cư trên toàn quốc</TitlePage>
@@ -126,7 +133,7 @@ const Home = () => {
       )}
       {!!!loading && data?.map((item, index) => <CardRealEaste data={item} />)}
       {/* <DetailRealEaste /> */}
-    </Fragment>
+    </div>
   );
 };
 export default Home;

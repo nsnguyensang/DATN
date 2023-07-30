@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from pymongo import MongoClient
+from pymongo import DESCENDING
 import urllib.parse
 import math
 import numpy as np
@@ -48,7 +49,6 @@ if sys.stdout.encoding != 'utf-8':
                       encoding='utf-8', buffering=1)
 
 
-
 @app.route('/api/predict/gbm', methods=['POST'])
 def predict_gbm():
     # Get the input data from the request
@@ -68,11 +68,13 @@ def predict_gbm():
     cols_num = ['square', 'floor', 'bathroom', 'bedroom']
     for c in cols_num:
         sample_transformed[c] = float(input_data[c])
-    column_order = ['square', 'floor', 'bathroom', 'bedroom', 'district', 'province', 'ward']
+    column_order = ['square', 'floor', 'bathroom',
+                    'bedroom', 'district', 'province', 'ward']
     sample_transformed = sample_transformed.reindex(columns=column_order)
 
     # Make the prediction using the loaded model
-    y_pred = gbm2.predict(sample_transformed[0:1], num_iteration=gbm2.best_iteration_)
+    y_pred = gbm2.predict(
+        sample_transformed[0:1], num_iteration=gbm2.best_iteration_)
 
     # Return the prediction as a response
     prediction_value = y_pred[0]
@@ -103,7 +105,8 @@ def predict_knn():
     cols_num = ['square', 'floor', 'bathroom', 'bedroom']
     for c in cols_num:
         sample_transformed[c] = float(input_data[c])
-    column_order = ['square', 'floor', 'bathroom','bedroom', 'district', 'province', 'ward']
+    column_order = ['square', 'floor', 'bathroom',
+                    'bedroom', 'district', 'province', 'ward']
     sample_transformed = sample_transformed.reindex(columns=column_order)
 
     # Make the prediction using the loaded model
@@ -175,6 +178,74 @@ def search_data():
     )
 
 
+@app.route('/api/can-ho-theo-khoang-gia', methods=['GET'])
+def get_can_ho_theo_khoang_gia():
+    # Định nghĩa các khoảng giá (bạn có thể điều chỉnh theo nhu cầu)
+    khoang_gia = [0, 500, 1000, 2000, 3000, 5000,
+                  7000, 10000, 20000, 30000, 100000000]
+    label_pie = ["< 500 triệu",
+                 "500 triệu - 1 tỷ",
+                 "1 - 2 tỷ",
+                 "2 - 3 tỷ",
+                 "3 - 5 tỷ",
+                 "5 - 7 tỷ",
+                 "7 - 10 tỷ",
+                 "10 - 20 tỷ",
+                 "20 -30 tỷ",
+                 "> 30 tỷ"]
+
+    # Lấy dữ liệu từ MongoDB (ví dụ: giá của căn hộ chung cư)
+    data = collection.find({}, {"_id": 0, "price": 1})
+    gia_can_ho = [item["price"] for item in data]
+
+    # Khởi tạo danh sách số lượng căn hộ cho mỗi khoảng giá ban đầu là 0
+    so_luong_can_ho = [0] * len(khoang_gia)
+
+    # Đếm số lượng căn hộ thuộc vào từng khoảng giá
+    for gia in gia_can_ho:
+        for i in range(len(khoang_gia)):
+            if i == 0:
+                if gia <= khoang_gia[i] * 1000000:
+                    so_luong_can_ho[i] += 1
+            elif khoang_gia[i - 1] * 1000000 < gia <= khoang_gia[i] * 1000000:
+                so_luong_can_ho[i] += 1
+
+    # Chuẩn bị dữ liệu cho biểu đồ pie
+    labels = ['{}-{}'.format(x, y) for x, y in zip(khoang_gia, khoang_gia[1:])]
+    values = so_luong_can_ho
+
+    # Tạo đối tượng JSON để trả về
+    response = {
+        'labels': label_pie,
+        'values': values
+    }
+
+    return jsonify(response)
+
+
+@app.route('/api/average-price-per-m2-by-project', methods=['GET'])
+def get_average_price_per_m2_by_project():
+    # Get the 'province' parameter from the request URL
+    province = request.args.get('province')
+    district = request.args.get('district')
+    # Pipeline to group by project and calculate average price per square meter
+    pipeline = [
+        {"$match": {"province": province, "district": district, "project": {"$nin": [
+            "Tin thường", "nan", "Tin miễn phí"]}}},  # Add a $match stage to filter by province
+        {"$group": {"_id": "$project", "total_square": {
+            "$sum": "$square"}, "total_price": {"$sum": "$price"}}},
+        {"$project": {"project": "$_id", "average_price_per_m2": {
+            "$divide": ["$total_price", "$total_square"]}, "_id": 0}},
+        {"$match": {"average_price_per_m2": {"$gte": 1000000, "$lte": 1000000000}}},
+        {"$sort": {"average_price_per_m2": DESCENDING}}  # Add $sort stage to sort by 'average_price_per_m2' in descending order
+    ]
+
+    # Execute the aggregation pipeline
+    result = list(collection.aggregate(pipeline))
+
+    return jsonify(result)
+
+
 @app.route("/api/allocation-by-province", methods=["GET"])
 def get_allocation_by_province():
     # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
@@ -207,6 +278,7 @@ def get_allocation_by_province():
 
     return jsonify(sorted_result)
 
+
 @app.route("/api/allocation-by-project", methods=["GET"])
 def get_allocation_by_project():
     # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
@@ -238,6 +310,8 @@ def get_allocation_by_project():
     }
 
     return jsonify(sorted_result)
+
+
 @app.route("/api/allocation-by-bedroom", methods=["GET"])
 def get_allocation_by_bedroom():
     # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
@@ -269,6 +343,8 @@ def get_allocation_by_bedroom():
     }
 
     return jsonify(sorted_result)
+
+
 @app.route("/api/allocation-by-bathroom", methods=["GET"])
 def get_allocation_by_bathroom():
     # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
@@ -300,6 +376,8 @@ def get_allocation_by_bathroom():
     }
 
     return jsonify(sorted_result)
+
+
 @app.route("/api/allocation-by-floor", methods=["GET"])
 def get_allocation_by_floor():
     # Thực hiện truy vấn để lấy dữ liệu từ MongoDB
@@ -331,6 +409,8 @@ def get_allocation_by_floor():
     }
 
     return jsonify(sorted_result)
+
+
 @app.route('/api/scatter-visual', methods=["GET"])
 def scatter_visual():
     # Lấy trường từ tham số truy vấn (params)

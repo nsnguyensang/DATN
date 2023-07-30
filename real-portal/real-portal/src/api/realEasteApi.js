@@ -30,8 +30,7 @@ export const predictHouseKNN = async (param) => {
 };
 export const predictHouseGBM = async (param) => {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/api/predict/gbm`, param);
+    const response = await axios.post(`${BASE_URL}/api/predict/gbm`, param);
     console.log("respone", response);
     if (response.status === 200) {
       return response.data;
@@ -123,6 +122,33 @@ export const scatterVisual = async (field) => {
     const response = await axios.get(
       `${BASE_URL}/api/scatter-visual?field=${field}`
     );
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+export const pieRangePrice = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/can-ho-theo-khoang-gia`);
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+export const lineChartProject = async ({province, district}) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/average-price-per-m2-by-project?province=${province}&district=${district}`);
     console.log("respone", response);
     if (response.status === 200) {
       return response.data;

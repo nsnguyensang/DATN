@@ -53,15 +53,15 @@ const TopBedroom = ({ top }) => {
         label: "Số lượng chung cư",
         data: valueBedroom,
         fill: false,
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },
     ],
   };
 
   return (
-    <div style={{ width: "450px" }}>
+    <div style={{ width: "660px" }}>
       <Bar options={options} data={data} />
     </div>
   );
