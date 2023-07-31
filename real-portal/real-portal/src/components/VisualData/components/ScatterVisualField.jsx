@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { scatterVisual } from "../../../api/realEasteApi";
+import { scatterVisual, scatterVisualFull } from "../../../api/realEasteApi";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,7 +11,6 @@ import {
   Legend,
 } from "chart.js";
 import { Scatter } from "react-chartjs-2";
-import VisualData from "..";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -21,35 +20,81 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-const ScatterVisualField = ({ feild }) => {
+
+const top_provinces = [
+  "Hà Nội",
+  "Hồ Chí Minh",
+  "Bình Dương",
+  "Đà Nẵng",
+  "Đồng Nai",
+  "Khánh Hòa",
+  "Long An",
+  "Hưng Yên",
+  "Lâm Đồng",
+  "Bình Thuận",
+  "Bình Phước",
+  "Quảng Nam",
+  "Bà Rịa Vũng Tàu",
+  "Cần Thơ",
+  "Hòa Bình",
+  "Quảng Ninh",
+  "Hải Phòng",
+  "Kiên Giang",
+  "Vĩnh Long",
+  "Quảng Bình",
+  "Bắc Ninh",
+  "Bình Định",
+  "Bà Rịa - Vũng Tàu",
+  "Thanh Hóa",
+  "Đắk Lắk",
+  "Others",
+];
+
+const fieldToLabel = {
+  square: "Diện tích(m^2)",
+  floor: "Số tầng",
+  bedroom: "Số phòng ngủ",
+  width: "Chiều rộng",
+  bathroom: "Số phòng tắm",
+  province: "Tỉnh thành",
+};
+
+const ScatterVisualField = ({ field }) => {
   const [dataVisual, setDataVisual] = useState([]);
+
   useEffect(() => {
     const fetchScatterVisual = async () => {
-      const result = await scatterVisual(feild);
-      console.log("resultProvince", result);
+      const result = await scatterVisualFull(field);
       setDataVisual(result);
     };
     fetchScatterVisual();
-  }, [feild]);
+  }, [field]);
+
+  const handleNameField = (field) => {
+    return fieldToLabel[field] || field;
+  };
+
   const options = {
     scales: {
       y: {
         title: {
           display: true,
-          text: "Giá",
+          text: "Giá (triệu)",
         },
         beginAtZero: true,
-        // max: 30000,
         min: 0,
       },
       x: {
         title: {
           display: true,
-          text: `${feild}`,
+          text: handleNameField(field),
         },
         beginAtZero: true,
-        // max: 400,
-        // min: 0,
+        type: field === "province" ? "category" : "linear",
+        labels:
+          field === "province"
+            ? top_provinces
+            : undefined,
       },
     },
     plugins: {
@@ -62,12 +107,13 @@ const ScatterVisualField = ({ feild }) => {
       },
     },
   };
+
   const data = {
     datasets: [
       {
         label: "Chung cư",
         data: dataVisual.map((item) => ({
-          x: item?.square || item?.width || item?.floor || item?.bedroom,
+          x: field === "province" ? item.province : item[field],
           y: item.price,
         })),
         backgroundColor: "rgba(54, 162, 235, 1)",
@@ -76,9 +122,10 @@ const ScatterVisualField = ({ feild }) => {
   };
 
   return (
-    <div style={{ width: "950px"}}>
+    <div style={{ width: "950px" }}>
       <Scatter options={options} data={data} />
     </div>
   );
 };
+
 export default ScatterVisualField;

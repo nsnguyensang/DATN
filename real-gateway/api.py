@@ -237,7 +237,8 @@ def get_average_price_per_m2_by_project():
         {"$project": {"project": "$_id", "average_price_per_m2": {
             "$divide": ["$total_price", "$total_square"]}, "_id": 0}},
         {"$match": {"average_price_per_m2": {"$gte": 1000000, "$lte": 1000000000}}},
-        {"$sort": {"average_price_per_m2": DESCENDING}}  # Add $sort stage to sort by 'average_price_per_m2' in descending order
+        # Add $sort stage to sort by 'average_price_per_m2' in descending order
+        {"$sort": {"average_price_per_m2": DESCENDING}}
     ]
 
     # Execute the aggregation pipeline
@@ -420,8 +421,8 @@ def scatter_visual():
     pipeline = [
         {
             '$match': {
-                'price': {'$lt': 2e10, '$gt': 50000000},
-                field: {'$lt': 300, '$gt': 0}
+                'price': {'$lt': 5e10, '$gt': 50000000},
+                field: {'$lt': 500, '$gt': 0}
             }
         }
     ]
@@ -437,6 +438,137 @@ def scatter_visual():
             field: doc[field]
         }
         scatter_data.append(scatter_entry)
+
+    return jsonify(scatter_data)
+
+
+# Danh sách 25 tỉnh lớn nhất
+top_provinces = [
+    'Hà Nội', 'Hồ Chí Minh', 'Bình Dương', 'Đà Nẵng', 'Đồng Nai', 'Khánh Hòa', 'Long An', 'Hưng Yên',
+    'Lâm Đồng', 'Bình Thuận', 'Bình Phước', 'Quảng Nam', 'Bà Rịa Vũng Tàu', 'Cần Thơ', 'Hòa Bình',
+    'Quảng Ninh', 'Hải Phòng', 'Kiên Giang', 'Vĩnh Long', 'Quảng Bình', 'Bắc Ninh', 'Bình Định',
+    'Bà Rịa - Vũng Tàu', 'Thanh Hóa', 'Đắk Lắk'
+]
+
+@app.route('/api/scatter-province', methods=["GET"])
+def scatter_province():
+    # Sử dụng aggregation framework của MongoDB để lấy dữ liệu tỉnh thành trong danh sách 25 tỉnh lớn nhất và Others
+    pipeline = [
+        {
+            '$match': {
+                'price': {'$lt': 5e10, '$gt': 50000000}
+            }
+        },
+        {
+            '$project': {
+                '_id': 0,
+                'province': {
+                    '$cond': {
+                        'if': {'$in': ['$province', top_provinces]},
+                        'then': '$province',
+                        'else': 'Others'
+                    }
+                },
+                'price': {'$divide': ['$price', 1000000]}  # Chia cho 1 triệu để đổi đơn vị
+            }
+        }
+    ]
+
+    # Thực hiện aggregation và lấy kết quả
+    data = collection.aggregate(pipeline)
+
+    # Tạo danh sách kết quả để trả về
+    scatter_data = list(data)
+
+    return jsonify(scatter_data)
+
+
+@app.route('/api/scatter_full', methods=["GET"])
+def scatter_full():
+    # Lấy trường từ tham số truy vấn (params)
+    field = request.args.get('field')
+
+    if field == 'province':
+        # Sử dụng aggregation framework của MongoDB để lấy dữ liệu tỉnh thành trong danh sách 25 tỉnh lớn nhất và Others
+        pipeline = [
+            {
+                '$match': {
+                    'price': {'$lt': 5e10, '$gt': 50000000}
+                }
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    'province': {
+                        '$cond': {
+                            'if': {'$in': ['$province', top_provinces]},
+                            'then': '$province',
+                            'else': 'Others'
+                        }
+                    },
+                    'price': {'$divide': ['$price', 1000000]}  # Chia cho 1 triệu để đổi đơn vị
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'province': '$province',
+                        'price': '$price'
+                    },
+                    'count': {'$sum': 1}
+                }
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    'province': '$_id.province',
+                    'price': '$_id.price',
+                    'count': 1
+                }
+            }
+        ]
+
+        # Thực hiện aggregation và lấy kết quả
+        data = collection.aggregate(pipeline)
+
+    else:
+        # Sử dụng aggregation framework của MongoDB để lấy dữ liệu trường "price" và "field"
+        pipeline = [
+            {
+                '$match': {
+                    'price': {'$lt': 5e10, '$gt': 50000000},
+                    field: {'$lt': 500, '$gt': 0}
+                }
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    'price': {'$divide': ['$price', 1000000]},  # Chia cho 1 triệu để đổi đơn vị
+                    field: '$' + field
+                }
+            },
+            {
+                '$group': {
+                    '_id': '$price',
+                    'field_value': {'$first': '$' + field},
+                    'count': {'$sum': 1}
+                }
+            },
+            {
+                '$project': {
+                    '_id': 0,
+                    'price': '$_id',
+                    field: '$field_value',
+                    'count': 1
+                }
+            }
+        ]
+
+        # Thực hiện aggregation và lấy kết quả
+        data = collection.aggregate(pipeline)
+
+    # Tạo danh sách kết quả để trả về
+    scatter_data = list(data)
 
     return jsonify(scatter_data)
 

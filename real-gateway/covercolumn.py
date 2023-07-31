@@ -31,11 +31,16 @@ for document in data:
     #     new_square = float(document['square'])
     #     collection.update_one({'_id': document['_id']}, {
     #                           '$set': {'square': new_square}})
-    if isinstance(document['floor'], str):
+    # if isinstance(document['floor'], str):
+    #     # Chuyển đổi chuỗi thành số thực và cập nhật vào cơ sở dữ liệu
+    #     new_floor = float(document['floor'])
+    #     collection.update_one({'_id': document['_id']}, {
+    #                           '$set': {'floor': new_floor}})
+    if isinstance(document['bedroom'], str):
         # Chuyển đổi chuỗi thành số thực và cập nhật vào cơ sở dữ liệu
-        new_floor = float(document['floor'])
+        new_bedroom = float(document['bedroom'])
         collection.update_one({'_id': document['_id']}, {
-                              '$set': {'floor': new_floor}})
+                              '$set': {'bedroom': new_bedroom}})
     # if isinstance(document['width'], str):
     #     if document['width'] == '':
     #         # Gán giá trị 0 cho các trường 'width' là chuỗi rỗng

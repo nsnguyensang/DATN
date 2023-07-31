@@ -132,7 +132,21 @@ export const scatterVisual = async (field) => {
     console.error("Error:", error);
   }
 };
-
+export const scatterVisualFull = async (field) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/scatter_full?field=${field}`
+    );
+    console.log("respone", response);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Error:", response.status);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 export const pieRangePrice = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/api/can-ho-theo-khoang-gia`);
@@ -146,9 +160,11 @@ export const pieRangePrice = async () => {
     console.error("Error:", error);
   }
 };
-export const lineChartProject = async ({province, district}) => {
+export const lineChartProject = async ({ province, district }) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/average-price-per-m2-by-project?province=${province}&district=${district}`);
+    const response = await axios.get(
+      `${BASE_URL}/api/average-price-per-m2-by-project?province=${province}&district=${district}`
+    );
     console.log("respone", response);
     if (response.status === 200) {
       return response.data;

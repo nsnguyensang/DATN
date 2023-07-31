@@ -29,8 +29,9 @@ export const selectTopFloor = [
   { value: 20, label: "Top 20 Floor" },
 ];
 export const selectScatterFeild = [
+  { value: "province", label: "Giá vs Tỉnh thành" },
   { value: "square", label: "Giá vs Diện tích" },
   { value: "width", label: "Giá vs Chiều rộng" },
-  { value: "bedroom", label: "Giá vs Phòng ngủ" },
+  // { value: "bedroom", label: "Giá vs Phòng ngủ" },
   { value: "floor", label: "Giá vs Số tầng" },
 ];

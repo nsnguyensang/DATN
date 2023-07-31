@@ -29,7 +29,7 @@ const VisualData = ({ backgroundColor }) => {
   const [topSelectBathroom, setTopSelectBathroom] = useState(10);
   const [topSelectBedroom, setTopSelectBedroom] = useState(10);
   const [topSelectFloor, setTopSelectFloor] = useState(10);
-  const [selectFieldVsPrice, setSelectFieldVsPrice] = useState("square");
+  const [selectFieldVsPrice, setSelectFieldVsPrice] = useState("province");
   const [plotImage, setPlotImage] = useState("");
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -180,6 +180,7 @@ const VisualData = ({ backgroundColor }) => {
               onChange={handleTopProvincesChange}
               defaultValue={15}
               options={selectTopProvince}
+              style={{ float: "right", marginRight: "20px" }}
             />
             <TopProvinces top={topSelectProvinces} />
           </Col>
@@ -189,6 +190,7 @@ const VisualData = ({ backgroundColor }) => {
               onChange={handleTopProjectChange}
               defaultValue={15}
               options={selectTopProject}
+              style={{ float: "right", marginRight: "20px" }}
             />
             <TopProject top={topSelectProject} />
           </Col>
@@ -219,6 +221,7 @@ const VisualData = ({ backgroundColor }) => {
               onChange={handleTopBedroomChange}
               defaultValue={10}
               options={selectTopBedroom}
+              style={{ float: "right", marginRight: "20px" }}
             />
             <TopBedroom top={topSelectBedroom} />
           </Col>
@@ -228,6 +231,7 @@ const VisualData = ({ backgroundColor }) => {
               onChange={handleTopBathroomChange}
               defaultValue={10}
               options={selectTopBathroom}
+              style={{ float: "right", marginRight: "20px" }}
             />
             <TopBathroom top={topSelectBathroom} />
           </Col>
@@ -242,10 +246,11 @@ const VisualData = ({ backgroundColor }) => {
           <TitleVisual>Mức giá với các thuộc tính còn lại</TitleVisual>
           <Select
             onChange={handleScatterFiledPrice}
-            defaultValue={"square"}
+            defaultValue={"province"}
             options={selectScatterFeild}
+            style={{ float: "right", marginRight: "20px" }}
           />
-          <ScatterVisualField feild={selectFieldVsPrice} />
+          <ScatterVisualField field={selectFieldVsPrice} />
         </BoxElement>
       </Row>
     </div>
