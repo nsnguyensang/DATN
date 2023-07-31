@@ -33,6 +33,14 @@ const TopBathroom = ({ top }) => {
     fetchAllocationByBathroom();
   }, [top]);
   const options = {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Số phòng tắm",
+        },
+      },
+    },
     responsive: true,
     plugins: {
       legend: {

@@ -95,14 +95,14 @@ const VisualData = ({ backgroundColor }) => {
     setSelectFieldVsPrice(value);
   };
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/plot-image") // Đường dẫn API của bạn
-      .then((response) => response.blob())
-      .then((blob) => {
-        const imageURL = URL.createObjectURL(blob);
-        setPlotImage(imageURL);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:5000/api/plot-image") // Đường dẫn API của bạn
+  //     .then((response) => response.blob())
+  //     .then((blob) => {
+  //       const imageURL = URL.createObjectURL(blob);
+  //       setPlotImage(imageURL);
+  //     });
+  // }, []);
   return (
     <div
       style={{
@@ -194,25 +194,6 @@ const VisualData = ({ backgroundColor }) => {
             />
             <TopProject top={topSelectProject} />
           </Col>
-          {/* <Col span={12}>
-            <Select
-              placeholder="Top Bedroom"
-              onChange={handleTopBedroomChange}
-              defaultValue={10}
-              options={selectTopBedroom}
-            />
-            <TopBedroom top={topSelectBedroom} />
-          </Col> */}
-          {/* <Col span={8}>
-            <Select
-              placeholder="Top Provinces"
-              onChange={handleScatterFiledPrice}
-              defaultValue={"square"}
-              options={selectScatterFeild}
-            />
-          </Col> */}
-          {/* <ScatterVisualField feild={selectFieldVsPrice} /> */}
-          {/* {plotImage && <img src={plotImage} alt="Plot" />} */}
         </Row>
         <Row gutter={24} style={{ marginTop: "30px" }}>
           <Col span={12}>

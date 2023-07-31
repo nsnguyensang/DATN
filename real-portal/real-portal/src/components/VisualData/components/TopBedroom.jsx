@@ -34,6 +34,14 @@ const TopBedroom = ({ top }) => {
   }, [top]);
   const options = {
     responsive: true,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Số phòng ngủ",
+        },
+      },
+    },
     plugins: {
       legend: {
         position: "top",
