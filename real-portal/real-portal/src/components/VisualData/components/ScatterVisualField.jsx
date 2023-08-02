@@ -103,7 +103,7 @@ const ScatterVisualField = ({ field }) => {
       },
       title: {
         display: true,
-        text: "So sánh phân bổ Giá với Diện tích của chung cư",
+        text: "So sánh phân bổ Giá với Tỉnh thành của chung cư",
       },
     },
   };

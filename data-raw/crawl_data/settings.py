@@ -16,11 +16,11 @@ FEED_EXPORT_ENCODING = 'utf-8'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
-# KAFKA_SERVERS = ['localhost:9092']  # Danh sách các Kafka brokers
-# KAFKA_TOPIC = 'my_topic'  # Tên topic Kafka
-# ITEM_PIPELINES = {
-#     'crawl_data.kafka_pipeline.KafkaPipeline': 300,
-# }
+KAFKA_SERVERS = ['localhost:9092'] 
+KAFKA_TOPIC = 'my_topic' 
+ITEM_PIPELINES = {
+    'crawl_data.kafka_pipeline.KafkaPipeline': 300,
+}
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 

@@ -7,7 +7,7 @@ kafka_topic = 'my_topic'
 
 # Cấu hình HDFS
 hdfs_namenode_url = 'http://localhost:9870'
-hdfs_path = 'hdfs://localhost:9000//kafka_data/data.txt'
+hdfs_path = 'hdfs://localhost:9000//kafka_data/data.csv'
 
 # Khởi tạo Kafka Consumer
 consumer = KafkaConsumer(
@@ -21,12 +21,12 @@ hdfs_client = InsecureClient(hdfs_namenode_url)
 
 # Đọc và đẩy dữ liệu từ Kafka vào HDFS
 for message in consumer:
-    value = message.value  # Giả sử dữ liệu là chuỗi UTF-8
-    file_path = hdfs_path + f'kafka_data_{message.offset}.txt'  # Định dạng tên tệp HDFS
+    value = message.value  
+    file_path = hdfs_path + f'kafka_data_{message.offset}.csv' 
     with hdfs_client.write(file_path, overwrite=True) as hdfs_file:
         hdfs_file.write(value)  # Ghi dữ liệu vào tệp HDFS
 
-    # Đánh dấu là đã xử lý thành công
+   
     
 
 # Đóng kết nối Kafka Consumer
