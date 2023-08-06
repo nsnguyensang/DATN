@@ -35,6 +35,9 @@ const VisualData = ({ backgroundColor }) => {
   const [districts, setDistricts] = useState([]);
   const [selectedCity, setSelectedCity] = useState("Thành phố Hà Nội");
   const [selectedDistrict, setSelectedDistrict] = useState("Quận Cầu Giấy");
+  const [searchProvince, setSearchProvince] = useState("");
+  const [searchDistrict, setSearchDistrict] = useState("");
+
   useEffect(() => {
     callAPI("https://provinces.open-api.vn/api/?depth=1");
   }, []);
@@ -123,6 +126,7 @@ const VisualData = ({ backgroundColor }) => {
             <TitleVisual>Giá trung bình theo dự án</TitleVisual>
             <Space wrap style={{ float: "right", marginRight: "40px" }}>
               <Select
+                showSearch
                 placeholder="Tỉnh/TP"
                 style={{
                   width: 160,
@@ -130,18 +134,30 @@ const VisualData = ({ backgroundColor }) => {
                 allowClear
                 value={selectedCity || undefined}
                 onChange={handleCityChange}
+                onSearch={(value) => setSearchProvince(value)}
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().includes(input.toLowerCase())
+                }
                 onClear={() => {
                   setSelectedCity("");
                   setSelectedDistrict("");
+                  setSearchProvince("");
                 }}
               >
-                {cities.map((city) => (
-                  <Option key={city.code} value={city.code}>
-                    {city.name}
-                  </Option>
-                ))}
+                {cities
+                  .filter((city) =>
+                    city.name
+                      .toLowerCase()
+                      .includes(searchProvince.toLowerCase())
+                  )
+                  .map((city) => (
+                    <Option key={city.code} value={city.code}>
+                      {city.name}
+                    </Option>
+                  ))}
               </Select>
               <Select
+                showSearch
                 placeholder="Quận/Huyện"
                 style={{
                   width: 160,
@@ -151,13 +167,24 @@ const VisualData = ({ backgroundColor }) => {
                 onChange={handleDistrictChange}
                 onClear={() => {
                   setSelectedDistrict("");
+                  setSearchDistrict("");
                 }}
+                onSearch={(value) => setSearchDistrict(value)}
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().includes(input.toLowerCase())
+                }
               >
-                {districts.map((district) => (
-                  <Option key={district.code} value={district.code}>
-                    {district.name}
-                  </Option>
-                ))}
+                {districts
+                  .filter((district) =>
+                    district.name
+                      .toLowerCase()
+                      .includes(searchDistrict.toLowerCase())
+                  )
+                  .map((district) => (
+                    <Option key={district.code} value={district.code}>
+                      {district.name}
+                    </Option>
+                  ))}
               </Select>
               <Button
                 type="primary"

@@ -189,6 +189,9 @@ const SearchAndFilter = () => {
                 setSelectedCity("");
                 setSelectedWard("");
                 setSelectedDistrict("");
+                setSearchProvince("");
+                setSearchDistrict("");
+                setSearchWard("");
               }}
             >
               {cities
@@ -218,6 +221,8 @@ const SearchAndFilter = () => {
               onClear={() => {
                 setSelectedDistrict("");
                 setSelectedWard("");
+                setSearchDistrict("");
+                setSearchWard("");
               }}
             >
               {districts
