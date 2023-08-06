@@ -118,24 +118,24 @@ const CardRealEaste = ({ data }) => {
             <div>
               <CardConfig>
                 <CardConfigPrice>
-                  {formatNumber(parseInt(data.price))}
+                  {data.price !== 0 ? formatNumber(parseInt(data.price)): "Thỏa thuận"}
                 </CardConfigPrice>
                 <CardConfigDot>.</CardConfigDot>
                 <CardConfigArea>{Math.floor(data.square)} m²</CardConfigArea>
                 <CardConfigDot>.</CardConfigDot>
                 <CardConfigPricePerM2>
-                  {pricePerProcess(data)} tr/m²
+                  {data.price !== 0 ? pricePerProcess(data) : "Thỏa thuận"} tr/m²
                 </CardConfigPricePerM2>
                 <CardConfigDot>.</CardConfigDot>
                 <CardRoom>
                   <Tooltip
                     placement="bottom"
                     title={`${
-                      data?.bedroom !== "0" ? data?.bedroom : "1"
+                      data?.bedroom !== "0" && data?.bedroom !== "nan"? data?.bedroom : "1"
                     } Phòng ngủ`}
                   >
                     <CardRoomSpan>
-                      {data?.bedroom !== "0" ? data?.bedroom : "1"}
+                      {data?.bedroom !== "0" && data?.bedroom !== "nan" ? data?.bedroom : "1"}
                     </CardRoomSpan>
                     <FontAwesomeIcon
                       icon={faBed}
@@ -148,11 +148,11 @@ const CardRealEaste = ({ data }) => {
                   <Tooltip
                     placement="bottom"
                     title={`${
-                      data?.bathroom !== "0" ? data?.bathroom : "1"
+                      data?.bathroom !== "0" && data?.bathroom !== "nan"? data?.bathroom : "1"
                     } WC`}
                   >
                     <CardRoomSpan>
-                      {data?.bathroom !== "0" ? data?.bathroom : "1"}
+                      {data?.bathroom !== "0" && data?.bathroom !== "nan" ? data?.bathroom : "1"}
                     </CardRoomSpan>
                     <FontAwesomeIcon
                       icon={faBath}

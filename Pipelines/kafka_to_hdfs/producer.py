@@ -10,6 +10,7 @@ hdfs_namenode_url = 'http://localhost:9870'
 hdfs_path = 'hdfs://localhost:9000//kafka_data/data.csv'
 
 # Khởi tạo Kafka Consumer
+
 consumer = KafkaConsumer(
     kafka_topic,
     bootstrap_servers=kafka_bootstrap_servers,

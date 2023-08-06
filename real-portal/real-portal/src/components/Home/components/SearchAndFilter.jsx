@@ -30,7 +30,9 @@ const SearchAndFilter = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
-
+  const [searchProvince, setSearchProvince] = useState("");
+  const [searchDistrict, setSearchDistrict] = useState("");
+  const [searchWard, setSearchWard] = useState("");
   useEffect(() => {
     callAPI("https://provinces.open-api.vn/api/?depth=1");
   }, []);
@@ -171,6 +173,7 @@ const SearchAndFilter = () => {
         <HomeFilter>
           <Space wrap>
             <Select
+              showSearch
               placeholder="Tỉnh/TP"
               style={{
                 width: 160,
@@ -178,40 +181,60 @@ const SearchAndFilter = () => {
               allowClear
               value={selectedCity || undefined}
               onChange={handleCityChange}
+              onSearch={(value) => setSearchProvince(value)}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
               onClear={() => {
                 setSelectedCity("");
                 setSelectedWard("");
                 setSelectedDistrict("");
               }}
             >
-              {cities.map((city) => (
-                <Option key={city.code} value={city.code}>
-                  {city.name}
-                </Option>
-              ))}
+              {cities
+                .filter((city) =>
+                  city.name.toLowerCase().includes(searchProvince.toLowerCase())
+                )
+                .map((city) => (
+                  <Option key={city.code} value={city.code}>
+                    {city.name}
+                  </Option>
+                ))}
             </Select>
 
             <Select
               placeholder="Quận/Huyện"
+              showSearch
               style={{
                 width: 160,
               }}
               allowClear
               value={selectedDistrict || undefined}
               onChange={handleDistrictChange}
+              onSearch={(value) => setSearchDistrict(value)}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
               onClear={() => {
                 setSelectedDistrict("");
                 setSelectedWard("");
               }}
             >
-              {districts.map((district) => (
-                <Option key={district.code} value={district.code}>
-                  {district.name}
-                </Option>
-              ))}
+              {districts
+                .filter((district) =>
+                  district.name
+                    .toLowerCase()
+                    .includes(searchDistrict.toLowerCase())
+                )
+                .map((district) => (
+                  <Option key={district.code} value={district.code}>
+                    {district.name}
+                  </Option>
+                ))}
             </Select>
 
             <Select
+              showSearch
               placeholder="Phường/Xã"
               value={selectedWard || undefined}
               style={{
@@ -220,12 +243,20 @@ const SearchAndFilter = () => {
               allowClear
               onChange={handleWardChange}
               onClear={() => setSelectedWard("")}
+              onSearch={(value) => setSearchWard(value)}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
             >
-              {wards.map((ward) => (
-                <Option key={ward.code} value={ward.code}>
-                  {ward.name}
-                </Option>
-              ))}
+              {wards
+                .filter((ward) =>
+                  ward.name.toLowerCase().includes(searchWard.toLowerCase())
+                )
+                .map((ward) => (
+                  <Option key={ward.code} value={ward.code}>
+                    {ward.name}
+                  </Option>
+                ))}
             </Select>
             <Select
               placeholder="Mức giá"

@@ -117,8 +117,10 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
             <div className="web-detail">
               <TitleDetail>{data.title}</TitleDetail>
               <AddressDetail>
-                {data?.project === "None" ? "" : "Dự án " + data?.project},{" "}
-                {data?.street === "None" ? "" : "Đường " + data?.street},{" "}
+                {data?.project === "None" || data?.project === "nan"
+                  ? ""
+                  : "Dự án " + data?.project}
+                , {data?.street === "None" ? "" : "Đường " + data?.street},{" "}
                 {data?.ward === "None" ? "" : data?.ward},{" "}
                 {processDistrict(data?.district)}, {data?.province}
               </AddressDetail>
@@ -126,10 +128,13 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                 <ShortInfoItem>
                   <ShortInfoTitle>Mức giá</ShortInfoTitle>
                   <ShortInfoValue>
-                    {formatNumber(parseInt(data.price))}
+                    {data.price
+                      ? formatNumber(parseInt(data.price))
+                      : "Thỏa thuận"}
                   </ShortInfoValue>
                   <ShortInfoExt>
-                    ~ {pricePerProcess(data)} triệu/m²
+                    ~ {data.price ? pricePerProcess(data) : "Thỏa thuận"}{" "}
+                    triệu/m²
                   </ShortInfoExt>
                 </ShortInfoItem>
                 <ShortInfoItem left="64px">
@@ -174,19 +179,25 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   <InfoOther>
                     <InfoOtherItem>Mức giá</InfoOtherItem>
                     <InfoOtherValue>
-                      {formatNumber(parseInt(data.price))}
+                      {data.price
+                        ? formatNumber(parseInt(data.price))
+                        : "Thỏa thuận"}
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Chiều rộng</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.width !== "0" ? data?.width : "Không xác định"}
+                      {data?.width !== "0" && data?.width !== 0
+                        ? data?.width + " m"
+                        : "Không xác định"}
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Chiều dài</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.length !== "0" ? data?.length : "Không xác định"}
+                      {data?.length !== "0" && data?.length !== 0
+                        ? data?.length + " m"
+                        : "Không xác định"}
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
@@ -200,19 +211,21 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   <InfoOther>
                     <InfoOtherItem>Số tầng</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.floor}
+                      {data?.floor !== "0" && data?.floor !== 0
+                        ? data?.floor
+                        : "Không xác định"}
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Số phòng ngủ</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.bedroom !== "0" ? data?.bedroom : "1"} phòng
+                      {data?.bedroom !== "0" && data?.bedroom !== "nan" ? data?.bedroom : "1"} phòng
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Số toilet</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.bathroom !== "0" ? data?.bathroom : "1"} phòng
+                      {data?.bathroom !== "0" && data?.bathroom !== "nan"? data?.bathroom : "1"} phòng
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
@@ -222,7 +235,23 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   <InfoOther>
                     <InfoOtherItem>Dự án</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.project ? data?.project : "Không xác định"}
+                      {data?.project &&
+                      data?.project !== "None" &&
+                      data?.project !== "nan"
+                        ? data?.project
+                        : "Không xác định"}
+                    </InfoOtherValue>
+                  </InfoOther>
+                  <InfoOther>
+                    <InfoOtherItem>Hồ bơi</InfoOtherItem>
+                    <InfoOtherValue>
+                      {data?.pool ? data?.pool : "Không xác định"}
+                    </InfoOtherValue>
+                  </InfoOther>
+                  <InfoOther>
+                    <InfoOtherItem>Vườn</InfoOtherItem>
+                    <InfoOtherValue>
+                      {data?.garden ? data?.garden : "Không xác định"}
                     </InfoOtherValue>
                   </InfoOther>
                 </div>

@@ -54,6 +54,9 @@ const Predict = ({ background }) => {
   const [modalSelected, setModalSelected] = useState("knn");
   const [currentPage, setCurrentPage] = useState(1);
   const [logParam, setLogParam] = useState({});
+  const [searchProvince, setSearchProvince] = useState("");
+  const [searchDistrict, setSearchDistrict] = useState("");
+  const [searchWard, setSearchWard] = useState("");
   const pageSize = 9;
   useEffect(() => {
     callAPI("https://provinces.open-api.vn/api/?depth=1");
@@ -332,6 +335,7 @@ const Predict = ({ background }) => {
                     ]}
                   >
                     <Select
+                      showSearch
                       style={{
                         width: 160,
                       }}
@@ -343,12 +347,24 @@ const Predict = ({ background }) => {
                         setSelectedWard("");
                         setSelectedDistrict("");
                       }}
+                      onSearch={(value) => setSearchProvince(value)}
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
                     >
-                      {provinces.map((city) => (
-                        <Option key={city.code} value={city.code}>
-                          {city.name}
-                        </Option>
-                      ))}
+                      {provinces
+                        .filter((city) =>
+                          city.name
+                            .toLowerCase()
+                            .includes(searchProvince.toLowerCase())
+                        )
+                        .map((city) => (
+                          <Option key={city.code} value={city.code}>
+                            {city.name}
+                          </Option>
+                        ))}
                     </Select>
                   </Form.Item>
                 </Col>
@@ -363,6 +379,7 @@ const Predict = ({ background }) => {
                     ]}
                   >
                     <Select
+                      showSearch
                       style={{
                         width: 160,
                       }}
@@ -373,12 +390,24 @@ const Predict = ({ background }) => {
                         setSelectedDistrict("");
                         setSelectedWard("");
                       }}
+                      onSearch={(value) => setSearchDistrict(value)}
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
                     >
-                      {districts.map((district) => (
-                        <Option key={district.code} value={district.code}>
-                          {district.name}
-                        </Option>
-                      ))}
+                      {districts
+                        .filter((district) =>
+                          district.name
+                            .toLowerCase()
+                            .includes(searchDistrict.toLowerCase())
+                        )
+                        .map((district) => (
+                          <Option key={district.code} value={district.code}>
+                            {district.name}
+                          </Option>
+                        ))}
                     </Select>
                   </Form.Item>
                 </Col>
@@ -395,6 +424,7 @@ const Predict = ({ background }) => {
                     ]}
                   >
                     <Select
+                      showSearch
                       value={selectedWard || undefined}
                       style={{
                         width: 160,
@@ -402,12 +432,24 @@ const Predict = ({ background }) => {
                       allowClear
                       onChange={handleWardChange}
                       onClear={() => setSelectedWard("")}
+                      onSearch={(value) => setSearchWard(value)}
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
                     >
-                      {wards.map((ward) => (
-                        <Option key={ward.code} value={ward.code}>
-                          {ward.name}
-                        </Option>
-                      ))}
+                      {wards
+                        .filter((ward) =>
+                          ward.name
+                            .toLowerCase()
+                            .includes(searchWard.toLowerCase())
+                        )
+                        .map((ward) => (
+                          <Option key={ward.code} value={ward.code}>
+                            {ward.name}
+                          </Option>
+                        ))}
                     </Select>
                   </Form.Item>
                 </Col>
