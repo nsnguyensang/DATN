@@ -187,7 +187,9 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   <InfoOther>
                     <InfoOtherItem>Chiều rộng</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.width !== "0" && data?.width !== 0
+                      {data?.width !== "0" &&
+                      data?.width !== 0 &&
+                      data?.width !== ""
                         ? data?.width + " m"
                         : "Không xác định"}
                     </InfoOtherValue>
@@ -195,7 +197,9 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   <InfoOther>
                     <InfoOtherItem>Chiều dài</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.length !== "0" && data?.length !== 0
+                      {data?.length !== "0" &&
+                      data?.length !== 0 &&
+                      data?.length !== ""
                         ? data?.length + " m"
                         : "Không xác định"}
                     </InfoOtherValue>
@@ -203,7 +207,7 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   <InfoOther>
                     <InfoOtherItem>Hướng nhà</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.direct !== "None"
+                      {data?.direct !== "None" && data?.direct !== ""
                         ? data?.direct
                         : "Không xác định"}
                     </InfoOtherValue>
@@ -219,18 +223,26 @@ const DetailRealEaste = ({ data, isOpen, onClose }) => {
                   <InfoOther>
                     <InfoOtherItem>Số phòng ngủ</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.bedroom !== "0" && data?.bedroom !== "nan" ? data?.bedroom : "1"} phòng
+                      {data?.bedroom !== "0" && data?.bedroom !== "nan"
+                        ? data?.bedroom
+                        : "1"}{" "}
+                      phòng
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Số toilet</InfoOtherItem>
                     <InfoOtherValue>
-                      {data?.bathroom !== "0" && data?.bathroom !== "nan"? data?.bathroom : "1"} phòng
+                      {data?.bathroom !== "0" && data?.bathroom !== "nan"
+                        ? data?.bathroom
+                        : "1"}{" "}
+                      phòng
                     </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Pháp lý</InfoOtherItem>
-                    <InfoOtherValue>{data?.juridical}</InfoOtherValue>
+                    <InfoOtherValue>
+                      {data?.juridical ? data?.juridical : "Sổ đỏ/ Sổ hồng"}
+                    </InfoOtherValue>
                   </InfoOther>
                   <InfoOther>
                     <InfoOtherItem>Dự án</InfoOtherItem>

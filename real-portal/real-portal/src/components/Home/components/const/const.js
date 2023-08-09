@@ -1,7 +1,11 @@
 export const priceDataSelect = [
   {
-    value: "0.5-1",
-    label: "500 triệu - 1 tỷ",
+    value: "0-0.01",
+    label: "Thỏa thuận",
+  },
+  {
+    value: "0.01-1",
+    label: "Dưới 1 tỷ",
   },
   {
     value: "1-2",
@@ -38,6 +42,10 @@ export const priceDataSelect = [
   {
     value: "40-50",
     label: "40 - 50 tỷ",
+  },
+  {
+    value: "50-1000",
+    label: "Trên 50 tỷ",
   },
 ];
 
@@ -89,5 +97,9 @@ export const squareDataSelect = [
   {
     value: "300-500",
     label: "300 - 500 m²",
+  },
+  {
+    value: "500-5000",
+    label: "Trên 500 m^2",
   },
 ];

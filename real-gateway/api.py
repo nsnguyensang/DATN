@@ -181,9 +181,10 @@ def search_data():
 @app.route('/api/can-ho-theo-khoang-gia', methods=['GET'])
 def get_can_ho_theo_khoang_gia():
     # Định nghĩa các khoảng giá (bạn có thể điều chỉnh theo nhu cầu)
-    khoang_gia = [0, 500, 1000, 2000, 3000, 5000,
+    khoang_gia = [0, 1, 500, 1000, 2000, 3000, 5000,
                   7000, 10000, 20000, 30000, 100000000]
-    label_pie = ["< 500 triệu",
+    label_pie = ["Thỏa thuận",
+                 "< 500 triệu",
                  "500 triệu - 1 tỷ",
                  "1 - 2 tỷ",
                  "2 - 3 tỷ",
@@ -221,6 +222,53 @@ def get_can_ho_theo_khoang_gia():
     }
 
     return jsonify(response)
+
+# @app.route('/api/can-ho-theo-khoang-gia-1', methods=['GET'])
+# def get_can_ho_theo_khoang_gia_1():
+#     # Định nghĩa các khoảng giá (bạn có thể điều chỉnh theo nhu cầu)
+#     khoang_gia = [0, 500, 1000, 2000, 3000, 5000,
+#                   7000, 10000, 20000, 30000, 100000000]
+#     label_pie = ["= 0",
+#                  "< 500 triệu",
+#                  "500 triệu - 1 tỷ",
+#                  "1 - 2 tỷ",
+#                  "2 - 3 tỷ",
+#                  "3 - 5 tỷ",
+#                  "5 - 7 tỷ",
+#                  "7 - 10 tỷ",
+#                  "10 - 20 tỷ",
+#                  "20 -30 tỷ",
+#                  "> 30 tỷ"]
+
+#     # Lấy dữ liệu từ MongoDB (ví dụ: giá của căn hộ chung cư)
+#     data = collection.find({}, {"_id": 0, "price": 1})
+#     gia_can_ho = [item["price"] for item in data]
+
+#     # Khởi tạo danh sách số lượng căn hộ cho mỗi khoảng giá ban đầu là 0
+#     so_luong_can_ho = [0] * len(khoang_gia)
+
+#     # Đếm số lượng căn hộ thuộc vào từng khoảng giá
+#     for gia in gia_can_ho:
+#         if gia == 0:
+#             so_luong_can_ho[0] += 1
+#         elif gia < 500 * 1000000:
+#             so_luong_can_ho[1] += 1
+#         else:
+#             for i in range(2, len(khoang_gia)):
+#                 if khoang_gia[i - 1] * 1000000 < gia <= khoang_gia[i] * 1000000:
+#                     so_luong_can_ho[i] += 1
+
+#     # Chuẩn bị dữ liệu cho biểu đồ pie
+#     labels = ['{}-{}'.format(x, y) for x, y in zip(khoang_gia, khoang_gia[1:])]
+#     values = so_luong_can_ho
+
+#     # Tạo đối tượng JSON để trả về
+#     response = {
+#         'labels': label_pie,
+#         'values': values
+#     }
+
+#     return jsonify(response)
 
 
 @app.route('/api/average-price-per-m2-by-project', methods=['GET'])
@@ -450,6 +498,7 @@ top_provinces = [
     'Bà Rịa - Vũng Tàu', 'Thanh Hóa', 'Đắk Lắk'
 ]
 
+
 @app.route('/api/scatter-province', methods=["GET"])
 def scatter_province():
     # Sử dụng aggregation framework của MongoDB để lấy dữ liệu tỉnh thành trong danh sách 25 tỉnh lớn nhất và Others
@@ -469,7 +518,8 @@ def scatter_province():
                         'else': 'Others'
                     }
                 },
-                'price': {'$divide': ['$price', 1000000]}  # Chia cho 1 triệu để đổi đơn vị
+                # Chia cho 1 triệu để đổi đơn vị
+                'price': {'$divide': ['$price', 1000000]}
             }
         }
     ]
@@ -506,7 +556,8 @@ def scatter_full():
                             'else': 'Others'
                         }
                     },
-                    'price': {'$divide': ['$price', 1000000]}  # Chia cho 1 triệu để đổi đơn vị
+                    # Chia cho 1 triệu để đổi đơn vị
+                    'price': {'$divide': ['$price', 1000000]}
                 }
             },
             {
@@ -543,7 +594,8 @@ def scatter_full():
             {
                 '$project': {
                     '_id': 0,
-                    'price': {'$divide': ['$price', 1000000]},  # Chia cho 1 triệu để đổi đơn vị
+                    # Chia cho 1 triệu để đổi đơn vị
+                    'price': {'$divide': ['$price', 1000000]},
                     field: '$' + field
                 }
             },
